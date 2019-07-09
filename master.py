@@ -1,4 +1,4 @@
-import os, sys, h5py, json
+import os, sys, h5py, json, re
 import datawell
 
 class Master(object):
