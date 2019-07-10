@@ -47,6 +47,7 @@ def function(masterfile):
 def main():
 	time1=time.time()
 	
+	# Run the script parallilised. By default using all cores (can be changed to fiewer cores if needed)
 	p = Pool()
 	p.map(function, master_list)
 	p.close
