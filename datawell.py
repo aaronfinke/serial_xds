@@ -53,8 +53,7 @@ class Datawell(object):
 			
 	def run(self):
 		# Run XDS in the datawell derectory:
-
 		os.chdir(self.framepath)
-		print('XXX {} XXX {} XXX'.format(os.getcwd(), os.listdir(self.framepath)))
+		#print('xxx {} xxx {} xxx'.format(os.getcwd(), os.listdir(self.framepath)))
 		subprocess.call(r"xds_par")
 		os.chdir(self.master_dir)
