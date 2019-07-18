@@ -1,4 +1,5 @@
 import os, sys, h5py, json, re
+from multiprocessing import Pool
 import datawell
 
 class Master(object):
@@ -14,15 +15,26 @@ class Master(object):
 
 		# Variables defined within class:
 		self.master_dictionary = {}
+		self.new_list = []
 		
 		# Functions called within class:
 		self.create_master_directory() # creating masterfile directories
-		self.create_and_run_data_wells() # creating datawell dictionary and run XDS in it
+		
+		# creating datawell directory and run XDS in it (with parallelization)
+		self.new_list = map(int, range(1,self.total_frames,self.frames_per_degree))		
+		# Next two lines are replace by the above line:
+		#for framenum in range(1,self.total_frames,self.frames_per_degree):
+		#	self.new_list.append(framenum)
+		p = Pool()
+		p.map(self.create_and_run_data_wells, self.new_list)
+		p.close()
+		
+			
+
 		self.generate_master_dictionary() # creating a master dictionary
 		self.write_master_dictionary() # writing a master dictionary as a json file
 		
 		
-
 
 	def create_master_directory(self):
 		# Generate a name for masterfile directory:
@@ -46,10 +58,9 @@ class Master(object):
 
 
 
-	def create_and_run_data_wells(self):
+	def create_and_run_data_wells(self, framenum):
 		# Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
-		for framenum in range(1,self.total_frames,self.frames_per_degree):
-			data_well = datawell.Datawell(framenum, framenum+self.frames_per_degree-1, self.get_master_directory_path(), self.masterpath, self.args)
+		data_well = datawell.Datawell(framenum, framenum+self.frames_per_degree-1, self.get_master_directory_path(), self.masterpath, self.args)
 			
 	def get_master_directory_path(self):
 	 	# Return master directory path. Used in the above function.
@@ -101,7 +112,7 @@ class Master(object):
 	def write_master_dictionary(self):
 		# Writing a master dictionary in json file.
 		try:
-			with open(os.path.join('{}'.format(os.getcwd()), 'DICTIONARY.json'), 'x') as file:
+			with open(os.path.join('{}'.format(self.get_master_directory_path()), 'DICTIONARY.json'), 'x') as file:
 				file.write(json.dumps(self.master_dictionary))
 		except FileExistsError:
 			print("File 'DICTIONARY.json' already exist")
@@ -122,4 +133,3 @@ def get_number_of_files(path):
 	print(path)
 	f = get_h5_file(path)
 	return len(f['/entry/data'])
-    
