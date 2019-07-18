@@ -53,4 +53,8 @@ Assumptions
 ---------------
 
 * EIGER HDF5 data
-* Data is collected serially, 5 frames per datawell (0.2<sup> o</sup> / frame)
+* Data is collected serially
+
+Acknowledgements
+-----------------
+serial_xds was developed at Cornell High Energy Synchrotron Source (CHESS) for serial ossilation crystallography data processing. Tested at MacCHESS ID7B2 beamline.
