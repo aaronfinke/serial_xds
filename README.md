@@ -47,7 +47,7 @@ serial_xds depends on:
 
 Installation
 ---------------
-If files are on your locar machine, no work is needed.
+If files are on your local machine, no work is needed.
 
 Assumptions
 ---------------
@@ -57,4 +57,4 @@ Assumptions
 
 Acknowledgements
 -----------------
-serial_xds was developed at Cornell High Energy Synchrotron Source (CHESS) for serial ossilation crystallography data processing. Tested at MacCHESS ID7B2 beamline.
+serial_xds was developed at Cornell High Energy Synchrotron Source (CHESS) for serial oscillation crystallography data processing. Tested at MacCHESS ID7B2 beamline.
