@@ -3,7 +3,7 @@ Serial_xds: Data Processing in Serial Oscillation Crystallography
 
 Introduction
 ----------------
-serial_xds is a python program that process data for serail osscilation crystallography
+serial_xds is a python program that process data for serial oscillation crystallography
 
 Usage
 ----------------
