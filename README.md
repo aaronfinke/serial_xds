@@ -47,7 +47,7 @@ serial_xds depends on:
 
 Installation
 ---------------
-If files are on your locar machine, no work is needed.
+If files are on your local machine, no work is needed.
 
 Assumptions
 ---------------
