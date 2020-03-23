@@ -3,7 +3,7 @@ Serial_xds: Data Processing in Serial Oscillation Crystallography
 
 Introduction
 ----------------
-serial_xds is a python program that process data for serial oscillation crystallography
+serial_xds is a python program that process data for serial oscillation crystallography.
 
 Usage
 ----------------
@@ -53,8 +53,8 @@ Assumptions
 ---------------
 
 * EIGER HDF5 data
-* Data is collected serially
+* Data is collected serially, <i>with oscillation</i>. This routine will not work with still images. Use nXDS for still processing.
 
 Acknowledgements
 -----------------
-serial_xds was developed at Cornell High Energy Synchrotron Source (CHESS) for serial ossilation crystallography data processing. Tested at MacCHESS ID7B2 beamline.
+serial_xds was developed at Cornell High Energy Synchrotron Source (CHESS) for serial ossilation crystallography data processing. Tested at the MacCHESS ID7B2 beamline.
