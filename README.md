@@ -54,7 +54,7 @@ Assumptions
 ---------------
 
 * Data is in EIGER HDF5 format. This may work with other HDF5 files but they are not yet tested.
-* Data is collected serially, <i>with oscillation</i>. This routine will not work with still images. Use [nXDS]( for still processing.
+* Data is collected serially, <i>with oscillation</i>. This routine will not work with still images. Use [nXDS](http://nxds.mpimf-heidelberg.mpg.de/) for still processing.
 
 Acknowledgements
 -----------------
