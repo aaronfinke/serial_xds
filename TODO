@@ -1,1 +1,4 @@
 - Automatically restart processing upon interruption of program
+- Add xdsstat
+- Add XSCALE support
+- logs
