@@ -1,4 +1,5 @@
 import argparse, fnmatch, os, h5py, time
+from datetime import datetime
 import logging, sys
 import master
 
@@ -18,7 +19,8 @@ def main():
     # root.addHandler(streamhandler)
     # root.addHandler(filehandler)
 
-    time1=time.time()
+    time1 = time.time()
+    date = datetime.now()
     parser = argparse.ArgumentParser(description='Arguments required to process the data: input, beamcenter, distance.')
 
     parser.add_argument('-i', '--input', type=str, nargs='+', required=True, help='Path of Directory containing HDF5 master file(s)')
@@ -33,7 +35,7 @@ def main():
 
     parser.add_argument('-f', '--framesperdegree', type=int, default=5, help='Number of frames per degree')
 
-    parser.add_argument('--output', default=os.getcwd(), help='Use this option to change output directly')
+    parser.add_argument('--output', default=os.getcwd(), help='Change output directory')
 
     parser.add_argument('-sg', '--spacegroup', help='Space group')
 
@@ -42,6 +44,8 @@ def main():
     parser.parse_args()
 
     args = parser.parse_args()
+
+    output_directory = master.create_output_directory(args.output, date)
 
     # Get all master files from the given path and create a list:
     for masterdir_input in args.input:
@@ -53,7 +57,7 @@ def main():
             totalframes = master.get_number_of_files(masterpath)
 
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
-            master_class = master.Master(args, masterpath, totalframes)
+            master_class = master.Master(args, masterpath, totalframes, output_directory)
 
     time2 = time.time()
     print("Total time: {:.1f} s".format(time2-time1))

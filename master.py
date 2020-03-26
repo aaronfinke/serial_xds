@@ -5,12 +5,12 @@ import datawell
 class Master(object):
 
     # Generating a constructor for the class:
-    def __init__(self, args, masterpath, num_of_total_frames):
+    def __init__(self, args, masterpath, num_of_total_frames, output_directory):
         self.args = args
         self.masterpath = masterpath
         self.frames_per_degree = args.framesperdegree
         self.total_frames = num_of_total_frames
-        self.output = args.output
+        self.output = output_directory
 
 
         # Variables defined within class:
@@ -22,14 +22,9 @@ class Master(object):
 
         # creating datawell directory and run XDS in it (with parallelization)
         self.new_list = map(int, range(1,self.total_frames,self.frames_per_degree))
-        # Next two lines are replace by the above line:
-        #for framenum in range(1,self.total_frames,self.frames_per_degree):
-        #    self.new_list.append(framenum)
         p = Pool()
         p.map(self.create_and_run_data_wells, self.new_list)
         p.close()
-
-
 
         self.generate_master_dictionary() # creating a master dictionary
         self.write_master_dictionary() # writing a master dictionary as a json file
@@ -38,25 +33,17 @@ class Master(object):
 
     def create_master_directory(self):
         # Generate a name for masterfile directory:
+        end_index = self.masterpath.find('_master.h5')
+        start_index = self.masterpath.rfind('/')
+        dir_name= self.masterpath[start_index+1:end_index]
+        new_dir_path = '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
+
+        # Create a mesterfile directory:
         try:
-            end_index = self.masterpath.find('_master.h5')
-            start_index = self.masterpath.rfind('/')
-            dir_name= self.masterpath[start_index+1:end_index]
-            new_dir_path = '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
-
-            # Create a mesterfile directory:
-            try:
-                os.makedirs(new_dir_path)
-            except OSError:
-                print("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
-            else:
-                print("Successfully created the directory {}".format(dir_name))
-        except:
-            print("Something is not working. Check the code in 'master.py'")
-
-
-
-
+            os.makedirs(new_dir_path)
+        except FileExistsError:
+            print("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
+            sys.exit(1)
 
     def create_and_run_data_wells(self, framenum):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
@@ -105,17 +92,13 @@ class Master(object):
             # Add frame_dictionary to the master_dictionary:
             self.master_dictionary[datawell]=frame_dictionary
 
-
-
-
-
     def write_master_dictionary(self):
         # Writing a master dictionary in json file.
         try:
             with open(os.path.join('{}'.format(self.get_master_directory_path()), 'DICTIONARY.json'), 'x') as file:
                 file.write(json.dumps(self.master_dictionary))
         except FileExistsError:
-            print("File 'DICTIONARY.json' already exist")
+            print("File 'DICTIONARY.json' already exists")
 
 def get_master_directory_path_from_input(path):
     #get the full path from the master directory from the input.
@@ -125,9 +108,17 @@ def get_master_directory_path_from_input(path):
     else:
         sys.exit('File "{}" not found. Check the path.'.format(path))
 
+def create_output_directory(path, date):
+    output_date = 'ssxoutput_{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
+                    a=date.year,b=date.month,c=date.day,d=date.hour,e=date.minute,f=date.second)
+    output_dir_path = '{a}/{b}'.format(a = path, b = output_date)
+    try:
+        os.makedirs(output_dir_path)
+    except OSError:
+        print("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
+        sys.exit(1)
+    return output_dir_path
 
-
-# Return number of data files in masterpath by simply finding the length of the H5 group. No checks.
 def get_h5_file(path):
     try:
         file = h5py.File(path, 'r')

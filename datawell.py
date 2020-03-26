@@ -1,4 +1,4 @@
-import subprocess, os, re
+import subprocess, os, re, sys
 from generate_xds import gen_xds_text
 
 
@@ -34,7 +34,7 @@ class Datawell(object):
             os.makedirs(self.framepath)
         except OSError:
             print("Failed to create datawell directory")
-
+            sys.exit()
 
 
     def gen_XDS(self):
@@ -54,6 +54,13 @@ class Datawell(object):
     def run(self):
         # Run XDS in the datawell derectory:
         os.chdir(self.framepath)
-        #print('xxx {} xxx {} xxx'.format(os.getcwd(), os.listdir(self.framepath)))
-        subprocess.call(r"xds_par")
+        sys.stdout.write("{}: FRAMES {}-{} ...".format(self.master_dir, self.ff, self.lf))
+        sys.stdout.flush()
+        f = open("XDS.log", "w")
+        subprocess.call(r"xds_par", stdout=f)
+        f.close()
+        if os.path.exists('XDS_ASCII.HKL'):
+            print("done.")
+        else:
+            print("failed.")
         os.chdir(self.master_dir)
