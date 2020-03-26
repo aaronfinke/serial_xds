@@ -4,19 +4,19 @@ import master
 
 def main():
 
-    root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-
-    streamhandler = logging.StreamHandler(sys.stdout)
-    filehandler = logging.FileHandler(filename='tmp.log')
-    handlers=[streamhandler, filehandler]
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
-        handlers=handlers
-        )
-    root.addHandler(streamhandler)
-    root.addHandler(filehandler)
+    # root = logging.getLogger()
+    # root.setLevel(logging.DEBUG)
+    #
+    # streamhandler = logging.StreamHandler(sys.stdout)
+    # filehandler = logging.FileHandler(filename='tmp.log')
+    # handlers=[streamhandler, filehandler]
+    # logging.basicConfig(
+    #     level=logging.DEBUG,
+    #     format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
+    #     handlers=handlers
+    #     )
+    # root.addHandler(streamhandler)
+    # root.addHandler(filehandler)
 
     time1=time.time()
     parser = argparse.ArgumentParser(description='Arguments required to process the data: input, beamcenter, distance.')
@@ -44,9 +44,9 @@ def main():
     args = parser.parse_args()
 
     # Get all master files from the given path and create a list:
-    for masterdir in args.input:
+    for masterdir_input in args.input:
+        masterdir = master.get_master_directory_path_from_input(masterdir_input)
         master_list = fnmatch.filter(os.listdir(masterdir), "*master.h5")
-        print(master_list)
         for masterfile in master_list:
             # Return number of data files linked to a master file:
             masterpath = "{}/{}".format(masterdir, masterfile)

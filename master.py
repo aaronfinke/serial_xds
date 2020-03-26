@@ -1,4 +1,4 @@
-import os, sys, h5py, json, re
+import os, sys, h5py, json, re, errno
 from multiprocessing import Pool
 import datawell
 
@@ -117,7 +117,13 @@ class Master(object):
         except FileExistsError:
             print("File 'DICTIONARY.json' already exist")
 
-
+def get_master_directory_path_from_input(path):
+    #get the full path from the master directory from the input.
+    if os.path.exists(os.path.abspath(path)):
+        print("master file path is {}".format(os.path.abspath(path)))
+        return os.path.abspath(path)
+    else:
+        sys.exit('File "{}" not found. Check the path.'.format(path))
 
 
 
