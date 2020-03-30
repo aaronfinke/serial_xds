@@ -29,17 +29,14 @@ class Datawell(object):
 
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
-#        try:
-        d_b_s_range = "{a} {b}".format(a=self.ff, b=self.lf)
-        with open(os.path.join(self.framepath, 'XDS.INP'), 'x') as input:
-            input.write(gen_xds_text(self.args.unitcell, self.masterpath,
-            self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.args.oscillation,
-            self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library))
-#        except:
-#            print("IO ERROR")
-
-
-
+        try:
+            d_b_s_range = "{a} {b}".format(a=self.ff, b=self.lf)
+            with open(os.path.join(self.framepath, 'XDS.INP'), 'x') as input:
+                input.write(gen_xds_text(self.args.unitcell, self.masterpath,
+                self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.args.oscillation,
+                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library))
+        except:
+            print("IO ERROR")
 
     def run(self):
         # Run XDS in the datawell derectory:

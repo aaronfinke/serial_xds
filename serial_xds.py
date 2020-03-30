@@ -1,4 +1,4 @@
-import argparse, fnmatch, os, h5py, time
+import argparse, fnmatch, os, h5py, time, json
 from datetime import datetime
 import logging, sys
 import master
@@ -53,6 +53,12 @@ def main():
         args.oscillationperwell = args.oscillation
 
     output_directory = master.create_output_directory(args.output, date)
+
+    try:
+        with open(os.path.join(output_directory, 'arguments.json'), 'w') as file:
+            file.write(json.dumps(vars(args)))
+    except FileExistsError:
+        print("File 'arguments.json' already exists")
 
     # Get all master files from the given path and create a list:
     for masterdir_input in args.input:
