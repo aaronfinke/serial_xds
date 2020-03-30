@@ -18,16 +18,6 @@ class Datawell(object):
         self.results_dict = {}
         self.final_dict = {}
 
-
-        # Functions called within class:
-        self.setup_datawell_directory() # generating datawell directory
-        self.gen_XDS() # generating XDS.INP in datawell directory
-        self.run()
-
-
-
-
-
     def setup_datawell_directory(self):
         # Generate datawell directory:
         try:
@@ -39,14 +29,14 @@ class Datawell(object):
 
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
-        try:
-            d_b_s_range = "{a} {b}".format(a=self.ff, b=self.lf)
-            with open(os.path.join(self.framepath, 'XDS.INP'), 'x') as input:
-                input.write(gen_xds_text(self.args.unitcell, self.masterpath.replace("master", "??????"),
-                self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.args.oscillations,
-                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range))
-        except:
-            print("IO ERROR")
+#        try:
+        d_b_s_range = "{a} {b}".format(a=self.ff, b=self.lf)
+        with open(os.path.join(self.framepath, 'XDS.INP'), 'x') as input:
+            input.write(gen_xds_text(self.args.unitcell, self.masterpath,
+            self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.args.oscillation,
+            self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library))
+#        except:
+#            print("IO ERROR")
 
 
 
@@ -54,13 +44,11 @@ class Datawell(object):
     def run(self):
         # Run XDS in the datawell derectory:
         os.chdir(self.framepath)
-        sys.stdout.write("{}: FRAMES {}-{} ...".format(self.master_dir, self.ff, self.lf))
-        sys.stdout.flush()
         f = open("XDS.log", "w")
         subprocess.call(r"xds_par", stdout=f)
         f.close()
         if os.path.exists('XDS_ASCII.HKL'):
-            print("done.")
+            print("{}: FRAMES {}-{} ... done".format(self.master_dir, self.ff, self.lf))
         else:
-            print("failed.")
+            print("{}: FRAMES {}-{} ... failed".format(self.master_dir, self.ff, self.lf))
         os.chdir(self.master_dir)

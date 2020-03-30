@@ -27,7 +27,9 @@ def main():
 
     parser.add_argument('-b', '--beamcenter', type=int, nargs=2, required=True, help='Beam center in X and Y (pixels)')
 
-    parser.add_argument('-r', '--oscillations', type=float, default=1, help='Oscillation angle per well')
+    parser.add_argument('-r', '--oscillationperwell', type=float, help='Oscillation angle per well')
+
+    parser.add_argument('-o', '--oscillation', type=float, required=True, help='Oscillation per well to process')
 
     parser.add_argument('-d', '--distance', type=float, required=True, help='Detector distance in mm')
 
@@ -37,13 +39,18 @@ def main():
 
     parser.add_argument('--output', default=os.getcwd(), help='Change output directory')
 
-    parser.add_argument('-sg', '--spacegroup', help='Space group')
+    parser.add_argument('-g', '--spacegroup', default=0, help='Space group')
+
+    parser.add_argument('-l', '--library', type=str, default='/Users/aaronfinke/XDS-OSX_64/dectris-neggia-mac.so', help='Location of Dectris Neggia library')
 
     parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90", help='Unit cell')
 
     parser.parse_args()
 
     args = parser.parse_args()
+
+    if args.oscillationperwell is None:
+        args.oscillationperwell = args.oscillation
 
     output_directory = master.create_output_directory(args.output, date)
 

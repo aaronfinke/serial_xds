@@ -9,6 +9,8 @@ class Master(object):
         self.args = args
         self.masterpath = masterpath
         self.frames_per_degree = args.framesperdegree
+        self.frames_per_well = int(args.oscillationperwell * args.framesperdegree)
+        self.frames_to_process = int(args.oscillation * args.framesperdegree)
         self.total_frames = num_of_total_frames
         self.output = output_directory
 
@@ -21,7 +23,7 @@ class Master(object):
         self.create_master_directory() # creating masterfile directories
 
         # creating datawell directory and run XDS in it (with parallelization)
-        self.new_list = map(int, range(1,self.total_frames,self.frames_per_degree))
+        self.new_list = map(int, range(1,self.total_frames,self.frames_per_well))
         p = Pool()
         p.map(self.create_and_run_data_wells, self.new_list)
         p.close()
@@ -47,7 +49,11 @@ class Master(object):
 
     def create_and_run_data_wells(self, framenum):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
-        data_well = datawell.Datawell(framenum, framenum+self.frames_per_degree-1, self.get_master_directory_path(), self.masterpath, self.args)
+        dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.get_master_directory_path(),
+                                    self.masterpath, self.args)
+        dw.setup_datawell_directory()
+        dw.gen_XDS()
+        dw.run()
 
     def get_master_directory_path(self):
          # Return master directory path. Used in the above function.
