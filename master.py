@@ -38,11 +38,11 @@ class Master(object):
         dir_name= self.masterpath[start_index+1:end_index]
         new_dir_path = '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
 
-        # Create a mesterfile directory:
+        # Create a masterfile directory:
         try:
             os.makedirs(new_dir_path)
         except FileExistsError:
-            print("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
+            print("Creation of the directory {} failed.".format(dir_name))
             sys.exit(1)
 
     def create_and_run_data_wells(self, framenum):

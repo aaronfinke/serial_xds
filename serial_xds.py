@@ -25,7 +25,7 @@ def main():
 
     parser.add_argument('-i', '--input', type=str, nargs='+', required=True, help='Path of Directory containing HDF5 master file(s)')
 
-    parser.add_argument('-b', '--beamcenter', type=int, nargs=2, required=True, help='Beam center in X and Y')
+    parser.add_argument('-b', '--beamcenter', type=int, nargs=2, required=True, help='Beam center in X and Y (pixels)')
 
     parser.add_argument('-r', '--oscillations', type=float, default=1, help='Oscillation angle per well')
 
