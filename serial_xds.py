@@ -93,7 +93,8 @@ if __name__=='__main__':
                         default=str(neggia_path),
                         help='Location of Dectris Neggia library')
 
-    parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90", help='Unit cell')
+    parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90",
+                        help='Unit cell')
 
     parser.parse_args()
 
