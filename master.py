@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os, sys, h5py, json, re, errno
 from multiprocessing import Pool
 import datawell
@@ -21,17 +23,16 @@ class Master(object):
 
         # Functions called within class:
         self.create_master_directory() # creating masterfile directories
+        self.master_directory_path = self.get_master_directory_path()
 
         # creating datawell directory and run XDS in it (with parallelization)
+        self.run()
+
+    def run(self):
         self.new_list = map(int, range(1,self.total_frames,self.frames_per_well))
         p = Pool()
         p.map(self.create_and_run_data_wells, self.new_list)
         p.close()
-
-        self.generate_master_dictionary() # creating a master dictionary
-        self.write_master_dictionary() # writing a master dictionary as a json file
-
-
 
     def create_master_directory(self):
         # Generate a name for masterfile directory:
@@ -49,11 +50,16 @@ class Master(object):
 
     def create_and_run_data_wells(self, framenum):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
-        dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.get_master_directory_path(),
+        dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.master_directory_path,
                                     self.masterpath, self.args)
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
+        self.master_dictionary[dw.getframes()] = dw.gen_datawell_dict()
+        with open(os.path.join('{}'.format(self.master_directory_path), 'DICTIONARY.json'), 'a') as file:
+            file.write(json.dumps(self.master_dictionary, indent=2))
+        dw.close()
+
 
     def get_master_directory_path(self):
          # Return master directory path. Used in the above function.
@@ -62,49 +68,6 @@ class Master(object):
             dir_name= self.masterpath[start_index+1:end_index]
             return '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
 
-
-
-
-
-    def generate_master_dictionary(self):
-        # Generating a master dictionary.
-        for datawell in os.listdir(self.get_master_directory_path()):
-            frame_dictionary = {}
-            full_path = "{}/{}".format(self.get_master_directory_path(), datawell)
-
-            # Add 'frame_number' and value to the frame_dictionary:
-            name = datawell.replace('_', ' ')
-            frame_dictionary['frame_number']=name
-
-            # Add 'is_processed' and value to the frame_dictionary:
-            processed = os.path.exists('{a}/{b}'.format(a=full_path,b='XDS_ASCII.HKL'))
-            frame_dictionary['is_processed']=processed
-
-            # Add 'is_indexed' and value to the frame_dictionary:
-            frame_dictionary['is_indexed']=processed
-
-            # Add 'accepted_reflections' and value to the frame dictionary:
-            if processed:
-                matching = 'NUMBER OF ACCEPTED OBSERVATIONS (INCLUDING SYSTEMATIC ABSENCES'
-                with open('{a}/{b}'.format(a=full_path, b='CORRECT.LP')) as file:
-                    for line in file:
-                        if matching in line:
-                            value = re.search(r'\d+',line)
-                            frame_dictionary['accepted_reflections']=value.group(0)
-                            #results_dict['accepted_reflections']= int(value.group(0))
-            else:
-                frame_dictionary['accepted_reflections']=None
-
-            # Add frame_dictionary to the master_dictionary:
-            self.master_dictionary[datawell]=frame_dictionary
-
-    def write_master_dictionary(self):
-        # Writing a master dictionary in json file.
-        try:
-            with open(os.path.join('{}'.format(self.get_master_directory_path()), 'DICTIONARY.json'), 'x') as file:
-                file.write(json.dumps(self.master_dictionary))
-        except FileExistsError:
-            print("File 'DICTIONARY.json' already exists")
 
 def get_master_directory_path_from_input(path):
     #get the full path from the master directory from the input.
@@ -136,3 +99,28 @@ def get_number_of_files(path):
     print(path)
     f = get_h5_file(path)
     return len(f['/entry/data'])
+
+def check_args(args):
+    def args_exit():
+        sys.exit("Please check your input!")
+
+    if args.oscillationperwell is None:
+        args.oscillationperwell = args.oscillation
+
+    if args.input is None:
+        print("Input directory must be specified.")
+        args_exit()
+    else:
+        for ip in args.input:
+            if not os.path.exists(ip):
+                print("Input path does not exist!")
+                args_exit()
+    if args.beamcenter is None or len(args.beamcenter) != 2:
+        print("Please specify the beam center.")
+        args_exit()
+    if args.oscillation is None:
+        print("Please provide the oscillation per well.")
+        args_exit()
+    if args.distance is None:
+        print("Please provide the detector distance.")
+        args_exit()
