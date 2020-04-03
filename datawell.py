@@ -16,7 +16,7 @@ class Datawell(object):
         self.frames = '{a}_{b}'.format(a=self.ff,b=self.lf)
 
         # Variables defined within class:
-        self.framepath = "{d}/{start}_{end}".format(d=self.master_dir, start=self.ff, end=self.lf)
+        self.framepath = "{d}/{start:04d}_{end:04d}".format(d=self.master_dir, start=self.ff, end=self.lf)
 
     def setup_datawell_directory(self):
         # Generate datawell directory:
@@ -62,7 +62,7 @@ class Datawell(object):
         return dw_dict
 
     def getframes(self):
-        return '{a}_{b}'.format(a=self.ff,b=self.lf)
+        return '{:04d}_{:04d}'.format(a=self.ff,b=self.lf)
 
     def close(self):
         if os.path.exists('XDS_ASCII.HKL'):

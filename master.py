@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os, sys, h5py, json, re, errno
-from multiprocessing import Pool
+from multiprocessing import Pool, Manager
 import datawell
 
 class Master(object):
@@ -18,7 +18,8 @@ class Master(object):
 
 
         # Variables defined within class:
-        self.master_dictionary = {}
+        manager = Manager()
+        self.master_dictionary = manager.dict()
         self.new_list = []
 
         # Functions called within class:
@@ -27,12 +28,15 @@ class Master(object):
 
         # creating datawell directory and run XDS in it (with parallelization)
         self.run()
+        self.write_to_json()
 
     def run(self):
-        self.new_list = map(int, range(1,self.total_frames,self.frames_per_well))
         p = Pool()
-        p.map(self.create_and_run_data_wells, self.new_list)
+        for framenum in range(1,self.total_frames,self.frames_per_well):
+            p.apply_async(self.create_and_run_data_wells, args=(framenum, self.master_dictionary))
         p.close()
+        p.join()
+        print(self.master_dictionary)
 
     def create_master_directory(self):
         # Generate a name for masterfile directory:
@@ -48,16 +52,16 @@ class Master(object):
             print("Creation of the directory {} failed.".format(dir_name))
             sys.exit(1)
 
-    def create_and_run_data_wells(self, framenum):
+    def create_and_run_data_wells(self, framenum, md):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
         dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.master_directory_path,
                                     self.masterpath, self.args)
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
-        self.master_dictionary[dw.getframes()] = dw.gen_datawell_dict()
-        with open(os.path.join('{}'.format(self.master_directory_path), 'DICTIONARY.json'), 'a') as file:
-            file.write(json.dumps(self.master_dictionary, indent=2))
+        dw_dict = dw.gen_datawell_dict()
+        print(dw_dict)
+        md[dw.getframes()] = dw_dict
         dw.close()
 
 
@@ -68,6 +72,10 @@ class Master(object):
             dir_name= self.masterpath[start_index+1:end_index]
             return '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
 
+    def write_to_json(self):
+        go_json = json.dumps(self.master_dictionary.copy(), indent=2, sort_keys=True)
+        with open(os.path.join('{}'.format(self.master_directory_path), 'results.json'), 'w') as file:
+            file.write(go_json)
 
 def get_master_directory_path_from_input(path):
     #get the full path from the master directory from the input.

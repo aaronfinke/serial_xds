@@ -62,7 +62,6 @@ def main(argv=None):
                         help='Unit cell')
     parser.parse_args()
     args = parser.parse_args()
-    print(args)
     if args.config_file is not None:
         if '.json' in args.config_file:
             config = json.load(open(args.config_file))
