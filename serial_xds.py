@@ -53,6 +53,8 @@ def main(argv=None):
                         help='Number of frames per degree')
     parser.add_argument('--output', default=os.getcwd(),
                         help='Change output directory')
+    parser.add_argument('-m', '--maxframes', type=int,
+                        help='Number of max frames to process (default all frames)')
     parser.add_argument('-g', '--spacegroup', default=0,
                         help='Space group')
     parser.add_argument('-l', '--library', type=str,
@@ -62,7 +64,6 @@ def main(argv=None):
                         help='Unit cell')
     parser.parse_args()
     args = parser.parse_args()
-    print(args)
     if args.config_file is not None:
         if '.json' in args.config_file:
             config = json.load(open(args.config_file))
@@ -77,6 +78,8 @@ def main(argv=None):
     output_directory = master.create_output_directory(args.output, date)
 
     print("Output directory is {}".format(output_directory))
+    sys.stdout.flush()
+
 
     try:
         with open(os.path.join(output_directory, 'arguments.json'), 'w') as file:
@@ -91,7 +94,10 @@ def main(argv=None):
         for masterfile in master_list:
             # Return number of data files linked to a master file:
             masterpath = "{}/{}".format(masterdir, masterfile)
-            totalframes = master.get_number_of_files(masterpath)
+            if args.maxframes is None:
+                totalframes = master.get_number_of_files(masterpath)
+            else:
+                totalframes = args.maxframes
 
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
             master_class = master.Master(args, masterpath, totalframes, output_directory)
@@ -114,3 +120,5 @@ if __name__=='__main__':
 
     time2 = time.time()
     print("Total processing time: {:.1f} s".format(time2-time1))
+#with xds_par: 684.3s
+ 

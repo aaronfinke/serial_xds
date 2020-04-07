@@ -42,6 +42,7 @@ Dependencies
 serial_xds depends on:
 
 * X-Ray Detector Software (XDS): [download from XDS website](http://xds.mpimf-heidelberg.mpg.de/)
+* h5py, an HDF5 plugin for python: [download instructions here] (https://www.h5py.org/)
 * xdsstat (available from [XDSwiki](https://strucbio.biologie.uni-konstanz.de/xdswiki/index.php/Xdsstat#Availability))
 * Neggia plugin: [download from Dectris website](https://www.dectris.com/accounts/login/?next=/support/downloads/software/neggia/) this is not strictly necessary if you also have the H5toXds program in your PATH, but Neggia improves performance.
 * For scaling and filtering of data, [XSCALE_ISOCLUSTER](https://strucbio.biologie.uni-konstanz.de/xdswiki/index.php/XSCALE_ISOCLUSTER) is also a useful tool to have.
