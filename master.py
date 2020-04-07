@@ -18,8 +18,7 @@ class Master(object):
 
 
         # Variables defined within class:
-        manager = Manager()
-        self.master_dictionary = manager.dict()
+        self.master_dictionary = Manager().dict()
         self.new_list = []
 
         # Functions called within class:
@@ -36,7 +35,6 @@ class Master(object):
             p.apply_async(self.create_and_run_data_wells, args=(framenum, self.master_dictionary))
         p.close()
         p.join()
-        print(self.master_dictionary)
 
     def create_master_directory(self):
         # Generate a name for masterfile directory:
@@ -54,16 +52,14 @@ class Master(object):
 
     def create_and_run_data_wells(self, framenum, md):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
+        print("Processing frames {}-{}...".format(framenum,framenum+self.frames_to_process-1))
         dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.master_directory_path,
                                     self.masterpath, self.args)
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
-        dw_dict = dw.gen_datawell_dict()
-        print(dw_dict)
-        md[dw.getframes()] = dw_dict
-        dw.close()
-
+        dw.write_to_json()
+        md[dw.getframes()] = dw.get_dw_dict()
 
     def get_master_directory_path(self):
          # Return master directory path. Used in the above function.
