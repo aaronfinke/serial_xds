@@ -3,3 +3,5 @@ __pycache__/
 *$py.class
 TODO
 collect_and_process.sh
+xscale
+results.json
