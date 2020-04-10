@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 import logging
 import platform
+import scale
 
 import master
 
@@ -87,6 +88,8 @@ def main(argv=None):
     except:
         print("File 'arguments.json' could not be written.")
 
+    md_list = []
+
     # Get all master files from the given path and create a list:
     for masterdir_input in args.input:
         masterdir = master.get_master_directory_path_from_input(masterdir_input)
@@ -101,6 +104,11 @@ def main(argv=None):
 
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
             master_class = master.Master(args, masterpath, totalframes, output_directory)
+            md_list.append(master_class.get_dictionary())
+    with open(os.path.join(output_directory, 'results.json'), 'w') as file:
+         file.write(json.dumps(md_list, indent = 2)))
+
+    scale.generate_xscale_directory(output_directory)
 
 if __name__=='__main__':
     time1 = time.time()
@@ -121,4 +129,3 @@ if __name__=='__main__':
     time2 = time.time()
     print("Total processing time: {:.1f} s".format(time2-time1))
 #with xds_par: 684.3s
- 

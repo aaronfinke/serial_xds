@@ -49,13 +49,14 @@ class Datawell(object):
     def set_dwdict(self):
         self.dwdict['first frame'] = self.ff
         self.dwdict['last frame'] = self.lf
+        self.dwdict['path'] = self.framepath
         if os.path.exists(os.path.join(self.framepath,'XDS_ASCII.HKL')):
             self.dwdict['processing_successful'] = True
             with open(os.path.join(self.framepath,'CORRECT.LP')) as file:
                 for line in file:
                     if 'NUMBER OF ACCEPTED OBSERVATIONS (INCLUDING SYSTEMATIC ABSENCES' in line:
                         value = re.search(r'\d+',line)
-                        self.dwdict['accepted_reflections']=value.group(0)
+                        self.dwdict['accepted_reflections']=int(value.group(0))
         else:
             self.dwdict['processing_successful'] = False
             self.dwdict['accepted_reflections'] = None

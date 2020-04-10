@@ -73,6 +73,9 @@ class Master(object):
         with open(os.path.join('{}'.format(self.master_directory_path), 'results.json'), 'w') as file:
             file.write(go_json)
 
+    def get_dictionary(self):
+        return self.master_dictionary.copy()
+
 def get_master_directory_path_from_input(path):
     #get the full path from the master directory from the input.
     if os.path.exists(os.path.abspath(path)):
