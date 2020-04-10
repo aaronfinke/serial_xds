@@ -1,6 +1,7 @@
 def gen_xds_text(UNIT_CELL_CONSTANTS, NAME_TEMPLATE_OF_DATA_FRAMES, ORGX, ORGY,
                 DETECTOR_DISTANCE, OSCILLATION_RANGE, X_RAY_WAVELENGTH, DATA_RANGE,
                 BACKGROUND_RANGE, SPOT_RANGE, LIB):
+    dataframes = "??????".join((str(NAME_TEMPLATE_OF_DATA_FRAMES).rsplit("master", 1)))
     text = """
 SPACE_GROUP_NUMBER=0
 UNIT_CELL_CONSTANTS= {in_1}
