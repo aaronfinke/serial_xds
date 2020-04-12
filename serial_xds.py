@@ -10,9 +10,9 @@ from datetime import datetime
 from pathlib import Path
 import logging
 import platform
-import scale
-
+from jsonenc import JSONEnc
 import master
+
 
 def main(argv=None):
 
@@ -36,7 +36,7 @@ def main(argv=None):
     parser = ArgumentParser(description=
     """
     """)
-    parser.add_argument('-i', '--input', type=str, nargs='+',
+    parser.add_argument('-i', '--input', type=lambda p: Path(p, exists=True).absolute(), nargs='+',
                         help='Path of Directory containing HDF5 master file(s)')
     parser.add_argument('-b', '--beamcenter', type=int, nargs=2,
                         help='Beam center in X and Y (pixels)')
@@ -44,7 +44,7 @@ def main(argv=None):
                         help='Oscillation per well to process')
     parser.add_argument('-d', '--distance', type=float,
                         help='Detector distance in mm')
-    parser.add_argument('-c', '--config_file', type=str,
+    parser.add_argument('-c', '--config_file', type=lambda p: Path(p, exists=True).absolute(),
                         help='json file containing configs')
     parser.add_argument('-r', '--oscillationperwell', type=float,
                         help='Oscillation angle per well')
@@ -52,63 +52,68 @@ def main(argv=None):
                         help='Wavelength in Angstrom')
     parser.add_argument('-f', '--framesperdegree', type=int, default=5,
                         help='Number of frames per degree')
-    parser.add_argument('--output', default=os.getcwd(),
+    parser.add_argument('--output', type=lambda p: Path(p, exists=True).absolute(), default=Path.cwd().absolute(),
                         help='Change output directory')
     parser.add_argument('-m', '--maxframes', type=int,
                         help='Number of max frames to process (default all frames)')
     parser.add_argument('-g', '--spacegroup', default=0,
                         help='Space group')
     parser.add_argument('-l', '--library', type=str,
-                        default=str(neggia_path),
+                        default=neggia_path,
                         help='Location of Dectris Neggia library')
     parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90",
                         help='Unit cell')
     parser.parse_args()
     args = parser.parse_args()
     if args.config_file is not None:
-        if '.json' in args.config_file:
-            config = json.load(open(args.config_file))
-            for key in config:
+        with args.config_file.open() as f:
+            configs = json.load(f)
+            for key in configs:
                 if key == 'config_file':
                     continue
                 if getattr(args, key) is None:
-                    setattr(args, key, config[key])
+                    setattr(args, key, configs[key])
     master.check_args(args)
 
-
-    output_directory = master.create_output_directory(args.output, date)
+    outpath_path = args.output
+    formatted_date = '{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
+                    a=date.year,b=date.month,c=date.day,d=date.hour,e=date.minute,f=date.second)
+    output_directory = Path(outpath_path / 'ssxoutput_{}'.format(formatted_date))
+    master.create_output_directory(output_directory)
 
     print("Output directory is {}".format(output_directory))
     sys.stdout.flush()
 
+    output_dictionary = {}
+    x = vars(args)
+    p = json.dumps(x, cls=JSONEnc)
 
     try:
-        with open(os.path.join(output_directory, 'arguments.json'), 'w') as file:
-            file.write(json.dumps(vars(args), indent=1))
-    except:
-        print("File 'arguments.json' could not be written.")
-
-    md_list = []
-
+        Path(output_directory / 'arguments.json').write_text(json.dumps(vars(args), cls=JSONEnc))
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)
+        sys.exit("File 'arguments.json' could not be written.")
     # Get all master files from the given path and create a list:
     for masterdir_input in args.input:
-        masterdir = master.get_master_directory_path_from_input(masterdir_input)
-        master_list = fnmatch.filter(os.listdir(masterdir), "*master.h5")
+        if not masterdir_input.is_dir():
+            sys.exit('File "{}" not found. Check the path.'.format(masterdir_input))
+        master_list = [f for f in masterdir_input.glob('*master.h5')]
+        if not master_list:
+            sys.exit('No master files found in input directory {}.'.format(masterdir_input))
         for masterfile in master_list:
             # Return number of data files linked to a master file:
-            masterpath = "{}/{}".format(masterdir, masterfile)
+            masterpath = Path(masterdir_input / masterfile)
             if args.maxframes is None:
                 totalframes = master.get_number_of_files(masterpath)
             else:
                 totalframes = args.maxframes
-
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
             master_class = master.Master(args, masterpath, totalframes, output_directory)
-            md_list.append(master_class.get_dictionary())
-    with open(os.path.join(output_directory, 'results.json'), 'w') as file:
-         file.write(json.dumps(md_list, indent = 2)))
 
-    scale.generate_xscale_directory(output_directory)
+        output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
+        Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc))
 
 if __name__=='__main__':
     time1 = time.time()
@@ -128,4 +133,3 @@ if __name__=='__main__':
 
     time2 = time.time()
     print("Total processing time: {:.1f} s".format(time2-time1))
-#with xds_par: 684.3s

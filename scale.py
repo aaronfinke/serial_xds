@@ -78,8 +78,14 @@ def sort_isocluster(xsdir):
         sys.exit("XSCALE_isocluster failed.")
     return result
 
-def filter_isocluster(list, threshold=0.6):
-
+def filter_isocluster(input_list, threshold=0.6):
+    result = []
+    for line in input_list:
+        if line[1] >= threshold:
+            result.append(line)
+    if len(result) == 0:
+        sys.exit("Cluster strengths are too low for a reasonable solution.")
+    return result
 
 def copy_xscale_results(xsdir, suffix='old'):
     if Path(xsdir / 'XSCALE.INP').is_file():
@@ -93,4 +99,5 @@ def gen_sorted_xscaleINP(md_list, args, xsdir)
         f.write(generate_xs_header(args.spacegroup,args.unitcell))
         for line in md_list:
             f.write(md_list[0])
-            
+
+def main():

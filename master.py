@@ -3,13 +3,15 @@
 import os, sys, h5py, json, re, errno
 from multiprocessing import Pool, Manager
 import datawell
+from pathlib import Path
+from jsonenc import JSONEnc
 
 class Master(object):
 
     # Generating a constructor for the class:
-    def __init__(self, args, masterpath, num_of_total_frames, output_directory):
+    def __init__(self, args, masterfilepath, num_of_total_frames, output_directory):
         self.args = args
-        self.masterpath = masterpath
+        self.masterfilepath = masterfilepath
         self.frames_per_degree = args.framesperdegree
         self.frames_per_well = int(args.oscillationperwell * args.framesperdegree)
         self.frames_to_process = int(args.oscillation * args.framesperdegree)
@@ -22,8 +24,8 @@ class Master(object):
         self.new_list = []
 
         # Functions called within class:
-        self.create_master_directory() # creating masterfile directories
-        self.master_directory_path = self.get_master_directory_path()
+        self.create_master_directory(self.masterfilepath) # creating masterfile directories
+        self.master_directory_path = self.get_master_directory_path(self.masterfilepath)
 
         # creating datawell directory and run XDS in it (with parallelization)
         self.run()
@@ -36,64 +38,50 @@ class Master(object):
         p.close()
         p.join()
 
-    def create_master_directory(self):
+    def create_master_directory(self, masterfilepath):
         # Generate a name for masterfile directory:
-        end_index = self.masterpath.find('_master.h5')
-        start_index = self.masterpath.rfind('/')
-        dir_name= self.masterpath[start_index+1:end_index]
-        new_dir_path = '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
-
+        suffix = masterfilepath.name.strip('_master.h5')
+        new_dir_path = Path(self.output / suffix)
         # Create a masterfile directory:
         try:
-            os.makedirs(new_dir_path)
-        except FileExistsError:
-            print("Creation of the directory {} failed.".format(dir_name))
-            sys.exit(1)
+            new_dir_path.mkdir()
+        except:
+            sys.exit("Creation of the directory {} failed.".format(dir_name))
 
     def create_and_run_data_wells(self, framenum, md):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
         print("Processing frames {}-{}...".format(framenum,framenum+self.frames_to_process-1))
         dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.master_directory_path,
-                                    self.masterpath, self.args)
+                                    self.masterfilepath, self.args)
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
         dw.write_to_json()
         md[dw.getframes()] = dw.get_dw_dict()
 
-    def get_master_directory_path(self):
+
+    def get_master_directory_name(self,masterfilepath):
+        return masterfilepath.name.strip('_master.h5')
+
+    def get_master_directory_path(self, masterfilepath):
          # Return master directory path. Used in the above function.
-            end_index = self.masterpath.find('_master.h5')
-            start_index = self.masterpath.rfind('/')
-            dir_name= self.masterpath[start_index+1:end_index]
-            return '{new_dir}/{name}'.format(new_dir = self.output, name = dir_name)
+        suffix = masterfilepath.name.strip('_master.h5')
+        return Path(self.output / suffix)
 
-    def write_to_json(self):
-        go_json = json.dumps(self.master_dictionary.copy(), indent=2, sort_keys=True)
-        with open(os.path.join('{}'.format(self.master_directory_path), 'results.json'), 'w') as file:
-            file.write(go_json)
-
-    def get_dictionary(self):
+    def get_master_dictionary(self):
         return self.master_dictionary.copy()
 
-def get_master_directory_path_from_input(path):
-    #get the full path from the master directory from the input.
-    if os.path.exists(os.path.abspath(path)):
-        print("master file path is {}".format(os.path.abspath(path)))
-        return os.path.abspath(path)
-    else:
-        sys.exit('File "{}" not found. Check the path.'.format(path))
+    def write_to_json(self):
+        Path(self.master_directory_path / 'results_{b}.json'.format(b=self.get_master_directory_name(self.masterfilepath))).write_text(
+            json.dumps(self.master_dictionary.copy(), indent=2, sort_keys=True, cls=JSONEnc)
+        )
 
-def create_output_directory(path, date):
-    output_date = 'ssxoutput_{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
-                    a=date.year,b=date.month,c=date.day,d=date.hour,e=date.minute,f=date.second)
-    output_dir_path = '{a}/{b}'.format(a = path, b = output_date)
+def create_output_directory(path):
     try:
-        os.makedirs(output_dir_path)
+        Path(path).mkdir()
     except OSError:
-        print("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
-        sys.exit(1)
-    return output_dir_path
+        sys.exit("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
+
 
 def get_h5_file(path):
     try:
@@ -113,15 +101,9 @@ def check_args(args):
 
     if args.oscillationperwell is None:
         args.oscillationperwell = args.oscillation
-
     if args.input is None:
         print("Input directory must be specified.")
         args_exit()
-    else:
-        for ip in args.input:
-            if not os.path.exists(ip):
-                print("Input path does not exist!")
-                args_exit()
     if args.beamcenter is None or len(args.beamcenter) != 2:
         print("Please specify the beam center.")
         args_exit()
