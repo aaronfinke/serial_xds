@@ -113,7 +113,7 @@ def main(argv=None):
             master_class = master.Master(args, masterpath, totalframes, output_directory)
 
         output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
-        Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc))
+        Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc, sort_keys=True))
 
 if __name__=='__main__':
     time1 = time.time()

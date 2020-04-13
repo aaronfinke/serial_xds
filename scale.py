@@ -101,3 +101,16 @@ def gen_sorted_xscaleINP(md_list, args, xsdir)
             f.write(md_list[0])
 
 def main():
+    parser = ArgumentParser(description=
+    """
+    """)
+
+    parser.add_argument('-i', '--input', type=lambda p: Path(p, exists=True).absolute(), nargs='+',
+                        help='Path of restuls.json file')
+    parser.parse_args()
+    args = parser.parse_args()
+
+
+
+if __name__=='__main__':
+    main()
