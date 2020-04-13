@@ -85,8 +85,6 @@ def main(argv=None):
     sys.stdout.flush()
 
     output_dictionary = {}
-    x = vars(args)
-    p = json.dumps(x, cls=JSONEnc)
 
     try:
         Path(output_directory / 'arguments.json').write_text(json.dumps(vars(args), cls=JSONEnc))
@@ -111,8 +109,7 @@ def main(argv=None):
                 totalframes = args.maxframes
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
             master_class = master.Master(args, masterpath, totalframes, output_directory)
-
-        output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
+            output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
         Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc, sort_keys=True))
 
 if __name__=='__main__':
