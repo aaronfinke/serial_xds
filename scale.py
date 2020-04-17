@@ -100,6 +100,13 @@ def gen_sorted_xscaleINP(md_list, args, xsdir)
         for line in md_list:
             f.write(md_list[0])
 
+def dict_from_json(file):
+    try:
+        d = json.load(open(file))
+    except:
+        sys.exit("Could not load json results file")
+    return d
+
 def main():
     parser = ArgumentParser(description=
     """
