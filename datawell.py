@@ -55,15 +55,38 @@ class Datawell(object):
         self.dwdict['path'] = str(self.framepath)
         if Path(self.framepath / 'XDS_ASCII.HKL').exists():
             self.dwdict['processing_successful'] = True
-            with Path(self.framepath / 'CORRECT.LP').open() as file:
-                for line in file:
-                    if 'NUMBER OF ACCEPTED OBSERVATIONS (INCLUDING SYSTEMATIC ABSENCES' in line:
-                        value = re.search(r'\d+',line)
-                        self.dwdict['accepted_reflections']=int(value.group(0))
+            self.dwdict['accepted_reflections'] = self.get_number_of_reflections(self.framepath)
+            self.dwdict['space_group'] = self.get_spacegroup(self.framepath)
+            self.dwdict['unit_cell'] = self.get_unitcell(self.framepath)
+
         else:
             self.dwdict['processing_successful'] = False
             self.dwdict['accepted_reflections'] = None
             self.dwdict['error_message'] = self.check_error()
+
+    def get_number_of_reflections(self, framepath):
+        with Path(framepath / 'CORRECT.LP').open() as file:
+            for line in file:
+                if 'NUMBER OF ACCEPTED OBSERVATIONS (INCLUDING SYSTEMATIC ABSENCES' in line:
+                    value = re.search(r'\d+',line)
+                    return int(value.group(0))
+        return None
+
+    def get_spacegroup(self,framepath):
+        with Path(framepath / 'XDS_ASCII.HKL').open() as file:
+            for line in file:
+                if '!SPACE_GROUP_NUMBER=' in line:
+                    return line.split()[-1]
+        return None
+
+    def get_unitcell(self,framepath):
+        with Path(framepath / 'XDS_ASCII.HKL').open() as file:
+            for line in file:
+                if '!UNIT_CELL_CONSTANTS=' in line:
+                    l = line.split()
+                    return '{a} {b} {c} {al} {be} {ga}'.format(a=l[-6], b=l[-5], c=l[-4], al=l[-3], be=l[-2], ga=l[-1])
+        return None
+
 
     def check_error(self):
         with Path(self.framepath / 'XDS.log').open() as f:
