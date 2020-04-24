@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 #return average and stdev of number of accepted reflections for a given dictionary
 def avg_reflections(d):
     for entry, value in d.items():
-        rlst = [y['accepted_reflections'] for (x,y) in value.items() if y['processing_successful'] ]
+        rlst = [y['accepted_reflections'] for (x,y) in value.items() if y['processing_successful'] and y['accepted_reflections'] is not None ]
     return statistics.mean(rlst), statistics.stdev(rlst)
 
 #removes datasets with accepted reflections below some multiple of the stdev
@@ -66,8 +66,16 @@ def run_xscale(xsdir):
         f.write(line)
     proc.wait()
     f.close()
+    with open(Path(xsdir / 'XSCALE.LP'),'r') as f:
+        line = f.readline()
+        while not 'SUBSET OF INTENSITY DATA WITH SIGNAL/NOISE >= -3.0 AS FUNCTION OF RESOLUTION' in line:
+            line = f.readline()
+        while not 'total' in line:
+            print(line, end='')
+            line = f.readline()
+        print(line)
 
-def run_isocluster(xsdir,out):
+def run_isocluster(xsdir,out='temp.ahkl'):
     f = open(Path(xsdir / 'xscale_isocluster.log'), "w")
     subprocess.call(r"xscale_isocluster {a}".format(a=out), stdout=f, shell=True, cwd=xsdir)
     f.close()
@@ -75,7 +83,7 @@ def run_isocluster(xsdir,out):
 def sort_isocluster(xsdir):
     input_list = []
     try:
-        with open('XSCALE.1.INP') as f:
+        with open(Path(xsdir / 'XSCALE.1.INP')) as f:
             line = f.readline()
             while line:
                 if line.startswith('INPUT_FILE'):
@@ -104,13 +112,20 @@ def copy_xscale_results(xsdir, suffix='old'):
     if Path(xsdir / 'XSCALE.INP').is_file():
         shutil.copy(Path(xsdir / 'XSCALE.INP'), Path(xsdir / 'XSCALE_{}.INP'.format(suffix)))
     if Path(xsdir / 'XSCALE.LP').is_file():
-        shutil.copy(Path(xsdir / 'XSCALE.INP'), Path(xsdir / 'XSCALE_{}.INP'.format(suffix)))
+        shutil.copy(Path(xsdir / 'XSCALE.LP'), Path(xsdir / 'XSCALE_{}.LP'.format(suffix)))
+    if Path(xsdir / 'XSCALE.log').is_file():
+        shutil.copy(Path(xsdir / 'XSCALE.log'), Path(xsdir / 'XSCALE_{}.log'.format(suffix)))
 
 def gen_sorted_xscaleINP(md_list, args, xsdir):
-    with open(Path(xsdir / 'XSCALE.INP'),'w') as f:
+    with open(Path(xsdir / 'XSCALE_isocluster.INP'),'w') as f:
         f.write(generate_xs_header(args.spacegroup,args.unitcell))
         for line in md_list:
-            f.write(md_list[0])
+            f.write('{}\n'.format(line[0]))
+            f.write('NBATCH=3 CORRECTIONS=ALL\n')
+
+def rerun_xscale(xsdir):
+    shutil.copy(Path(xsdir / 'XSCALE_isocluster.INP'), Path(xsdir / 'XSCALE.INP'))
+    run_xscale(xsdir)
 
 def dict_from_json(jsonfile):
     return json.load(open(jsonfile))
@@ -118,6 +133,7 @@ def dict_from_json(jsonfile):
 def main():
     parser = ArgumentParser(description=
     """
+    Run xscale and xscale_isocluster.
     """)
 
     parser.add_argument('-i', '--input', type=lambda p: Path(p, exists=True).absolute(),

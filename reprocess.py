@@ -7,6 +7,7 @@ from multiprocessing import Pool, Manager
 import shutil
 from argparse import ArgumentParser
 from jsonenc import JSONEnc
+import scale
 
 def json_to_dict(jsonfile):
     assert jsonfile.is_file(), "JSON File does not exist or cannot be loaded"
@@ -31,7 +32,7 @@ def update_xds_INP(p,args):
     Path(p / 'XDS.INP').write_text(data)
 
 
-def rerun_xds(args, xdsdir, mdict):
+def rerun_xds(args, xdsdir):
     p = Path(xdsdir)
 #    print('rerunning XDS in {a} with SG {b} and unit cell {c}'.format(a=xdsdir, b= args.spacegroup, c=args.unitcell))
     copy_xds_results(p,'P1')
@@ -92,7 +93,6 @@ def write_to_json(args, mdict):
     Path(args.input.parent / 'results_{b}.json'.format(b='reprocessed')).write_text(
         json.dumps(mdict.copy(), indent=2, sort_keys=True, cls=JSONEnc))
 
-
 def main():
     parser = ArgumentParser(description=
     """
@@ -104,6 +104,9 @@ def main():
                         help='Path of restuls.json file')
     parser.add_argument('-s', '--spacegroup', type=int, help='Space Group Number')
     parser.add_argument('-u', '--unitcell', type=str, help='Unit Cell')
+    parser.add_argument('--rescale', action='store_true', help="Rescale after reprocessing")
+    parser.add_argument('--isocluster', action='store_true', help="Run xscale_isocluster on reprocessed set")
+    parser.add_argument('--assert_P1', action='store_true', help="Assert P1")
     parser.parse_args()
     args = parser.parse_args()
     global mdict
@@ -112,6 +115,21 @@ def main():
 
     reprocess(args)
     write_to_json(args, mdict)
+
+    if args.rescale:
+        xsdir = scale.generate_xscale_directory(args.input.parent)
+        scale.generate_xscaleINP(mdict, args, xsdir)
+        scale.run_xscale(xsdir)
+    if args.isocluster:
+        xsdir = scale.get_xscale_directory(args.input.parent)
+        scale.copy_xscale_results(xsdir, 'old')
+        scale.run_isocluster(xsdir)
+        result = scale.filter_isocluster(scale.sort_isocluster(xsdir))
+        scale.gen_sorted_xscaleINP(result,args,xsdir)
+        scale.rerun_xscale(xsdir)
+
+
+
 
 if __name__ == '__main__':
     main()
