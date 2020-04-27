@@ -42,7 +42,7 @@ def generate_xscaleINP(d, args, xsdir):
 
     l = filter_datasets(d)
 
-    if args.assert_P1:
+    if args.assert_P1 or args.spacegroup == 0:
         with open(Path(xsdir / 'XSCALE.INP'), 'w') as f:
             f.write(generate_xs_header(1, [y for x,y in l.items()][0]['unit_cell']))
             f.write(generate_xs_input(l))

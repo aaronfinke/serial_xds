@@ -56,6 +56,8 @@ def main(argv=None):
     parser.add_argument('--assert_P1', action='store_true', help="Assert P1 Space Group")
     parser.add_argument('--output', type=lambda p: Path(p, exists=True).absolute(), default=Path.cwd().absolute(),
                         help='Change output directory')
+    parser.add_argument('--outputname', type=str, default="ssxoutput",
+                        help='Change output directory')
     parser.add_argument('-m', '--maxframes', type=int,
                         help='Number of max frames to process (default all frames)')
     parser.add_argument('-g', '--spacegroup', default=0,
@@ -82,7 +84,7 @@ def main(argv=None):
     outpath_path = args.output
     formatted_date = '{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
                     a=date.year,b=date.month,c=date.day,d=date.hour,e=date.minute,f=date.second)
-    output_directory = Path(outpath_path / 'ssxoutput_{}'.format(formatted_date))
+    output_directory = Path(outpath_path / '{a}_{b}'.format(a=args.outputname, b=formatted_date))
     master.create_output_directory(output_directory)
 
     print("Output directory is {}".format(output_directory))
