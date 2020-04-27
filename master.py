@@ -56,7 +56,7 @@ class Master(object):
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
-        dw.write_to_json()
+        #dw.write_to_json()
         md[dw.getframes()] = dw.get_dw_dict()
 
 

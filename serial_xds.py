@@ -12,6 +12,7 @@ import logging
 import platform
 from jsonenc import JSONEnc
 import master
+import scale
 
 
 def main(argv=None):
@@ -52,7 +53,10 @@ def main(argv=None):
                         help='Wavelength in Angstrom')
     parser.add_argument('-f', '--framesperdegree', type=int, default=5,
                         help='Number of frames per degree')
+    parser.add_argument('--assert_P1', action='store_true', help="Assert P1 Space Group")
     parser.add_argument('--output', type=lambda p: Path(p, exists=True).absolute(), default=Path.cwd().absolute(),
+                        help='Change output directory')
+    parser.add_argument('--outputname', type=str, default="ssxoutput",
                         help='Change output directory')
     parser.add_argument('-m', '--maxframes', type=int,
                         help='Number of max frames to process (default all frames)')
@@ -63,6 +67,8 @@ def main(argv=None):
                         help='Location of Dectris Neggia library')
     parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90",
                         help='Unit cell')
+    parser.add_argument('--scale', action='store_true', help="Do XSCALE after processing")
+
     parser.parse_args()
     args = parser.parse_args()
     if args.config_file is not None:
@@ -78,7 +84,7 @@ def main(argv=None):
     outpath_path = args.output
     formatted_date = '{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
                     a=date.year,b=date.month,c=date.day,d=date.hour,e=date.minute,f=date.second)
-    output_directory = Path(outpath_path / 'ssxoutput_{}'.format(formatted_date))
+    output_directory = Path(outpath_path / '{a}_{b}'.format(a=args.outputname, b=formatted_date))
     master.create_output_directory(output_directory)
 
     print("Output directory is {}".format(output_directory))
@@ -111,6 +117,12 @@ def main(argv=None):
             master_class = master.Master(args, masterpath, totalframes, output_directory)
             output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
         Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc, sort_keys=True))
+
+        #run scale.py if asked for
+        if args.scale:
+            xsdir = scale.generate_xscale_directory(output_directory)
+            scale.generate_xscaleINP(output_dictionary, args, xsdir)
+            scale.run_xscale(xsdir)
 
 if __name__=='__main__':
     time1 = time.time()
