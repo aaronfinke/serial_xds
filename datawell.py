@@ -30,6 +30,9 @@ class Datawell(object):
         except:
             sys.exit('Datawell directory creation failed.')
 
+    def get_dw_path(self):
+        return self.framepath
+
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
         try:
@@ -48,6 +51,29 @@ class Datawell(object):
         with open(Path(self.framepath / 'XDS.log'), 'w') as f:
             subprocess.call(r"xds_par", stdout=f, shell=True, cwd=self.framepath)
         self.set_dwdict()
+
+    def check_and_rerun(self):
+        '''IDXREF fails and XDS stops when less than 50% of reflections are indexed. This ensures those datasets
+        get integrated too.
+        '''
+        if not self.dwdict['processing_successful']:
+            if 'INSUFFICIENT PERCENTAGE' in self.dwdict['error_message']:
+                self.update_XDS_INP_afterIDXREFfail()
+                with open(Path(self.framepath / 'XDS.log'), 'a') as f:
+                    subprocess.call(r"xds_par", stdout=f, shell=True, cwd=self.framepath)
+                self.set_dwdict()
+        else:
+            return
+
+    def update_XDS_INP_afterIDXREFfail(self):
+        '''IDXREF fails and XDS stops when less than 50% of reflections are indexed. This ensures those datasets
+        get integrated too.
+        '''
+        with open(Path(self.framepath / 'XDS.INP'), 'r') as source:
+                data='\n'.join(line.rstrip() for line in source)
+        data = re.sub('JOB=.*', 'JOB= DEFPIX INTEGRATE CORRECT', data,re.DOTALL)
+        Path(self.framepath / 'XDS.INP').write_text(data)
+
 
     def set_dwdict(self):
         self.dwdict['first frame'] = self.ff

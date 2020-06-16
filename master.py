@@ -56,7 +56,7 @@ class Master(object):
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
-        #dw.write_to_json()
+        dw.check_and_rerun()
         md[dw.getframes()] = dw.get_dw_dict()
 
 
@@ -93,7 +93,8 @@ def get_h5_file(path):
 def get_number_of_files(path):
     print(path)
     f = get_h5_file(path)
-    return len(f['/entry/data'])
+    lastdata = list(f['/entry/data/'].keys())[-1]
+    return f['/entry/data/'].get(lastdata).attrs.get('image_nr_high')
 
 def check_args(args):
     def args_exit():

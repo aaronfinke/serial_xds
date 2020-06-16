@@ -114,6 +114,8 @@ def main(argv=None):
             else:
                 totalframes = args.maxframes
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
+            print('master file is:', masterfile)
+            print('total files is', totalframes)
             master_class = master.Master(args, masterpath, totalframes, output_directory)
             output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
         Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc, sort_keys=True))
