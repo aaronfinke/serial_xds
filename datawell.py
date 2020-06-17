@@ -36,7 +36,7 @@ class Datawell(object):
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
         try:
-            d_b_s_range = "{a} {b}".format(a=int(self.ff)+1, b=self.lf)
+            d_b_s_range = "{a} {b}".format(a=int(self.ff)+4, b=self.lf)
             Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.args.unitcell, self.masterpath,
                 self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.oscillation_per_frame,
                 self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library))

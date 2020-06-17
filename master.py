@@ -13,8 +13,8 @@ class Master(object):
         self.args = args
         self.masterfilepath = masterfilepath
         self.frames_per_degree = args.framesperdegree
-        self.frames_per_well = int(args.oscillationperwell * args.framesperdegree)
-        self.frames_to_process = int(args.oscillation * args.framesperdegree)
+        self.frames_per_well = int(args.oscillation * args.framesperdegree)
+        self.frames_to_process = int(args.oscillationperwell * args.framesperdegree)
         self.total_frames = num_of_total_frames
         self.output = output_directory
 
