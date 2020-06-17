@@ -56,7 +56,7 @@ class Master(object):
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
-        dw.check_and_rerun()
+        #dw.check_and_rerun()
         md[dw.getframes()] = dw.get_dw_dict()
 
 
