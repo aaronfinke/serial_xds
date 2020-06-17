@@ -32,8 +32,8 @@ def get_xscale_directory(path):
 
 def generate_xs_header(sg, unitcell, output_file="temp.ahkl"):
     return """OUTPUT_FILE={c}
-SPACE_GROUP_NUMBER={a}
-UNIT_CELL_CONSTANTS={b}
+!SPACE_GROUP_NUMBER={a}
+!UNIT_CELL_CONSTANTS={b}
 SAVE_CORRECTION_IMAGES=FALSE
 WFAC1=1
 PRINT_CORRELATIONS=FALSE\n""".format(a=sg, b=unitcell, c=output_file)
