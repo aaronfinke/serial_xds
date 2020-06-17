@@ -97,7 +97,7 @@ def get_number_of_files(path, args):
     try:
         numimages = f['/entry/data/'].get(lastdata).attrs.get('image_nr_high')
     except:
-        numimages = len(list(f['/entry/data/'].keys()) * self.args.oscillation * self.args.framesperdegree)
+        numimages = len(list(f['/entry/data/'].keys()) * args.oscillation * args.framesperdegree)
     return numimages
 
 def check_args(args):
