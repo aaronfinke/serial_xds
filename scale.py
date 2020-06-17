@@ -60,7 +60,7 @@ def generate_xs_input(d):
 def run_xscale(xsdir):
     # Run XDS in the datawell derectory:
     f = open(Path(xsdir / 'xscale.log'), "w")
-    proc = subprocess.Popen(r"xscale_par", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, cwd=xsdir, text=True)
+    proc = subprocess.Popen(r"xscale_par", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, cwd=xsdir)
     for line in proc.stdout:
         sys.stdout.write(line)
         f.write(line)
