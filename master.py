@@ -90,7 +90,7 @@ def get_h5_file(path):
         raise IOError("Not a valid h5 file")
     return file
 
-def get_number_of_files(path):
+def get_number_of_files(path, args):
     print(path)
     f = get_h5_file(path)
     lastdata = list(f['/entry/data/'].keys())[-1]

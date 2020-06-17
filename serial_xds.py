@@ -110,7 +110,7 @@ def main(argv=None):
             # Return number of data files linked to a master file:
             masterpath = Path(masterdir_input / masterfile)
             if args.maxframes is None:
-                totalframes = master.get_number_of_files(masterpath)
+                totalframes = master.get_number_of_files(masterpath, args)
             else:
                 totalframes = args.maxframes
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
