@@ -39,7 +39,7 @@ class Datawell(object):
             d_b_s_range = "{a} {b}".format(a=int(self.ff)+4, b=self.lf)
             Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.args.unitcell, self.masterpath,
                 self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.oscillation_per_frame,
-                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library))
+                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library, self.args.spacegroup))
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
