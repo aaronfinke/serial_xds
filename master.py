@@ -65,7 +65,7 @@ class Master(object):
 
     def get_master_directory_path(self, masterfilepath):
          # Return master directory path. Used in the above function.
-        suffix = masterfilepath.name.strip('_master.h5')
+        suffix = masterfilepath.stem.replace('_master','')
         return Path(self.output / suffix)
 
     def get_master_dictionary(self):
