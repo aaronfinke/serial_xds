@@ -40,7 +40,7 @@ class Master(object):
 
     def create_master_directory(self, masterfilepath):
         # Generate a name for masterfile directory:
-        suffix = masterfilepath.stem
+        suffix = Path(str(masterfilepath).replace('_master.h5', ''))
         new_dir_path = Path(self.output / suffix)
         # Create a masterfile directory:
         try:
