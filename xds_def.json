@@ -1,0 +1,330 @@
+{
+"JOB": {
+    "defaultvalue": "XYCORR INIT COLSPOT IDXREF DEFPIX XPLAN INTEGRATE CORRECT",
+    "required": true
+  },
+"MAXIMUM_NUMBER_OF_JOBS": {
+    "defaultvalue": 4,
+    "required": true
+  },
+"MAXIMUM_NUMBER_OF_PROCESSORS": {
+    "defaultvalue": 8,
+    "required": true
+  },
+"CLUSTER_NODES": {
+    "defaultvalue": "",
+    "required": false
+  },
+"SECONDS": {
+    "defaultvalue": 0,
+    "required": false
+  },
+"NUMBER_OF_IMAGES_IN_CACHE": {
+    "defaultvalue": 500,
+    "required": false
+  },
+"TEST": {
+    "defaultvalue": 0,
+    "required": false
+  },
+"NUMBER_OF_IMAGES_IN_CACHE": {
+    "defaultvalue": 500,
+    "required": false
+  },
+"NAME_TEMPLATE_OF_DATA_FRAMES": {
+    "defaultvalue": "",
+    "required": true
+  },
+"LIB": {
+    "defaultvalue": "",
+    "required": false
+  },
+"EXCLUDE_DATA_RANGE": {
+    "defaultvalue": "",
+    "required": false
+  },
+"DATA_RANGE": {
+    "defaultvalue": "",
+    "required": true
+  },
+"BACKGROUND_RANGE": {
+    "defaultvalue": "",
+    "required": true
+  },
+"DIRECTION_OF_DETECTOR_X-AXIS": {
+    "defaultvalue": "1.0 0.0 0.0",
+    "required": true
+  },
+"DIRECTION_OF_DETECTOR_Y-AXIS": {
+    "defaultvalue": "0.0 1.0 0.0",
+    "required": true
+  },
+"ORGX": {
+    "defaultvalue": "",
+    "required": true
+  },
+"ORGY": {
+    "defaultvalue": "",
+    "required": true
+  },
+"DETECTOR_DISTANCE": {
+    "defaultvalue": "",
+    "required": true
+  },
+"ROTATION_AXIS": {
+    "defaultvalue": "-1.0 0.0 0.0",
+    "required": true
+  },
+"OSCILLATION_RANGE": {
+    "defaultvalue": "0.2",
+    "required": true
+  },
+"STARTING_ANGLE": {
+    "defaultvalue": "0",
+    "required": false
+  },
+"STARTING_FRAME": {
+    "defaultvalue": "1",
+    "required": false
+  },
+"X-RAY_WAVELENGTH": {
+    "defaultvalue": "1.0",
+    "required": true
+  },
+"INCIDENT_BEAM_DIRECTION": {
+    "defaultvalue": "0.0 0.0 1.0",
+    "required": true
+  },
+"FRACTION_OF_POLARIZATION": {
+    "defaultvalue": "0.99",
+    "required": true
+  },
+"SPACE_GROUP_NUMBER": {
+    "defaultvalue": 0,
+    "required": true
+  },
+"UNIT_CELL_CONSTANTS": {
+    "defaultvalue": "50 60 70 90 90 90",
+    "required": true
+  },
+"FRIEDEL'S_LAW":{
+    "defaultvalue": "FALSE",
+    "required": true
+  },
+"NBX": {
+    "defaultvalue": 3,
+    "required": false
+  },
+"NBY": {
+    "defaultvalue": 3,
+    "required": true
+  },
+"BACKGROUND_PIXEL": {
+    "defaultvalue": 6,
+    "required": false
+  },
+"STRONG_PIXEL": {
+    "defaultvalue": 3.0,
+    "required": false
+  },
+"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
+    "defaultvalue": 1500000,
+    "required": false
+  },
+"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
+    "defaultvalue": 1500000,
+    "required": false
+  },
+"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
+    "defaultvalue": 1500000,
+    "required": false
+  },
+"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
+    "defaultvalue": 1500000,
+    "required": false
+  },
+"MINIMUM_NUMBER_OF_PIXELS_IN_A_SPOT": {
+    "defaultvalue": 3,
+    "required": true
+  },
+"SPOT_MAXIMUM-CENTROID": {
+    "defaultvalue": 3,
+    "required": false
+  },
+"SEGMENT": {
+    "defaultvalue": "",
+    "required": false
+  },
+"REFINE_SEGMENT": {
+    "defaultvalue": "",
+    "required": false
+  },
+"DIRECTION_OF_SEGMENT_X-AXIS": {
+    "defaultvalue": "",
+    "required": false
+  },
+"DIRECTION_OF_SEGMENT_Y-AXIS": {
+    "defaultvalue": "",
+    "required": false
+  },
+"SEGMENT_ORGX": {
+    "defaultvalue": "",
+    "required": false
+  },
+"SEGMENT_ORGY": {
+    "defaultvalue": "",
+    "required": false
+  },
+"SEGMENT_DISTANCE": {
+    "defaultvalue": "",
+    "required": false
+  },
+"MAXIMUM_IMAGE_GAP_FOR_ADDING_PARTIALS": {
+    "defaultvalue": 5.0,
+    "required": false
+  },
+"RGRID": {
+    "defaultvalue": "",
+    "required": false
+  },
+"SEPMIN": {
+    "defaultvalue": 4.0,
+    "required": true
+  },
+"CLUSTER_RADIUS": {
+    "defaultvalue": "3.5",
+    "required": false
+  },
+"INDEX_ERROR": {
+    "defaultvalue": "0.5",
+    "required": false
+  },
+"INDEX_MAGNITUDE": {
+    "defaultvalue": "8",
+    "required": false
+  },
+"INDEX_QUALITY": {
+    "defaultvalue": "0.8",
+    "required": false
+  },
+"INDEX_ORIGIN": {
+    "defaultvalue": "0 0 0",
+    "required": false
+  },
+"MERGE_TREE": {
+    "defaultvalue": "0.2",
+    "required": false
+  },
+"MAXIMUM_ERROR_OF_SPOT_POSITION": {
+    "defaultvalue": "3.0",
+    "required": false
+  },
+"MAXIMUM_ERROR_OF_SPINDLE_POSITION": {
+    "defaultvalue": "2.0",
+    "required": false
+  },
+"MINIMUM_FRACTION_OF_INDEXED_SPOTS": {
+    "defaultvalue": "0.5",
+    "required": false
+  },
+"REFINE(IDXREF)": {
+    "defaultvalue": "BEAM AXIS ORIENTATION CELL  ! POSITION",
+    "required": true
+  },
+"REFINE(INTEGRATE)": {
+    "defaultvalue": "ORIENTATION POSITION BEAM ! CELL AXIS",
+    "required": true
+  },
+"REFINE(CORRECT)": {
+    "defaultvalue": "POSITION BEAM ORIENTATION CELL AXIS",
+    "required": true
+  },
+"MINIMUM_I/SIGMA": {
+    "defaultvalue": "50",
+    "required": true
+  },
+"REFLECTING_RANGE": {
+    "defaultvalue": "0.8",
+    "required": false
+  },
+"REFLECTING_RANGE_E.S.D.": {
+    "defaultvalue": "0.1",
+    "required": false
+  },
+"BEAM_DIVERGENCE": {
+    "defaultvalue": "0.1",
+    "required": false
+  },
+"BEAM_DIVERGENCE_E.S.D.": {
+    "defaultvalue": "0.025",
+    "required": false
+  },
+"NUMBER_OF_PROFILE_GRID_POINTS_ALONG_ALPHA/BETA": {
+    "defaultvalue": "9",
+    "required": false
+  },
+"NUMBER_OF_PROFILE_GRID_POINTS_ALONG_GAMMA": {
+    "defaultvalue": "9",
+    "required": false
+  },
+"BEAM_DIVERGENCE_E.S.D.": {
+    "defaultvalue": "0.025",
+    "required": false
+  },
+"BEAM_DIVERGENCE_E.S.D.": {
+    "defaultvalue": "0.025",
+    "required": false
+  },
+"CUT": {
+    "defaultvalue": "2.0",
+    "required": false
+  },
+"DELPHI": {
+    "defaultvalue": "5",
+    "required": false
+  },
+"MINPK": {
+    "defaultvalue": "75.0",
+    "required": false
+  },
+"PROFILE_FITTING": {
+    "defaultvalue": "TRUE",
+    "required": false
+  },
+"STRICT_ABSORPTION_CORRECTION": {
+    "defaultvalue": "FALSE",
+    "required": true
+  },
+"PATCH_SHUTTER_PROBLEM": {
+    "defaultvalue": "FALSE",
+    "required": false
+  },
+"CORRECTIONS": {
+    "defaultvalue": " !",
+    "required": true
+  },
+"NBATCH": {
+    "defaultvalue": "1",
+    "required": false
+  },
+"BATCHSIZE": {
+    "defaultvalue": "5.0",
+    "required": false
+  },
+"REFLECTIONS/CORRECTION_FACTOR": {
+    "defaultvalue": "10",
+    "required": false
+  },
+"REFERENCE_DATA_SET": {
+    "defaultvalue": "",
+    "required": false
+  },
+"REJECT_ALIEN": {
+    "defaultvalue": "20.0",
+    "required": false
+  },
+"DATA_RANGE_FIXED_SCALE_FACTOR": {
+    "defaultvalue": "",
+    "required": false
+  }
+  }
