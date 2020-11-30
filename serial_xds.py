@@ -38,7 +38,7 @@ def main(argv=None):
     """
     """)
     parser.add_argument('-i', '--input', type=lambda p: Path(p, exists=True).absolute(), nargs='+',
-                        help='Path of Directory containing HDF5 master file(s)')
+                        help='Path(s) of HDF5 master file(s)')
     parser.add_argument('-b', '--beamcenter', type=int, nargs=2,
                         help='Beam center in X and Y (pixels)')
     parser.add_argument('-o', '--oscillation', type=float,
@@ -49,17 +49,15 @@ def main(argv=None):
                         help='json file containing configs')
     parser.add_argument('-r', '--oscillationperwell', type=float,
                         help='Oscillation angle per well')
-    parser.add_argument('-w', '--wavelength', type=float, default=1.216,
+    parser.add_argument('-w', '--wavelength', type=float, default=1,
                         help='Wavelength in Angstrom')
-    parser.add_argument('-f', '--framesperdegree', type=int, default=5,
+    parser.add_argument('-f','--framesperdegree', type=int, default=5,
                         help='Number of frames per degree')
     parser.add_argument('--assert_P1', action='store_true', help="Assert P1 Space Group")
     parser.add_argument('--output', type=lambda p: Path(p, exists=True).absolute(), default=Path.cwd().absolute(),
                         help='Change output directory')
     parser.add_argument('--outputname', type=str, default="ssxoutput",
                         help='Change output directory')
-    parser.add_argument('-m', '--maxframes', type=int,
-                        help='Number of max frames to process (default all frames)')
     parser.add_argument('-g', '--spacegroup', default=0,
                         help='Space group')
     parser.add_argument('-l', '--library', type=str,
@@ -99,25 +97,16 @@ def main(argv=None):
         message = template.format(type(ex).__name__, ex.args)
         print(message)
         sys.exit("File 'arguments.json' could not be written.")
-    # Get all master files from the given path and create a list:
-    for masterdir_input in args.input:
-        if not masterdir_input.is_dir():
-            sys.exit('File "{}" not found. Check the path.'.format(masterdir_input))
-        master_list = [f for f in masterdir_input.glob('*master.h5')]
-        if not master_list:
-            sys.exit('No master files found in input directory {}.'.format(masterdir_input))
-        for masterfile in master_list:
-            # Return number of data files linked to a master file:
-            masterpath = Path(masterdir_input / masterfile)
-            if args.maxframes is None:
-                totalframes = master.get_number_of_files(masterpath)
-            else:
-                totalframes = args.maxframes
-            # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):
-            print('master file is:', masterfile)
-            print('total files is', totalframes)
-            master_class = master.Master(args, masterpath, totalframes, output_directory)
-            output_dictionary[master_class.get_master_directory_name(masterpath)] = master_class.get_master_dictionary()
+
+    for masterfile in args.input:
+        master_h5 = master.get_h5_file(masterfile)
+        if not master.is_masterH5file(master_h5):
+            sys.exit('not a valid master file')
+        master_h5.close()
+        # Return number of data files linked to a master file:
+        print('master file is: {}'.format(masterfile))
+        master_class = master.Master(args, masterfile, output_directory)
+        output_dictionary[master_class.get_master_directory_name(masterfile)] = master_class.get_master_dictionary()
         Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc, sort_keys=True))
 
         #run scale.py if asked for

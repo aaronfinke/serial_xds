@@ -9,15 +9,22 @@ from jsonenc import JSONEnc
 
 class Datawell(object):
 
-    # Generating a constructor for the class:
-    def __init__(self, first_frame, last_frame, master_directory, masterpath, args):
+    def __init__(self, first_frame, last_frame, master_directory, masterfilepath, 
+        beamcenter, distance, wavelength, unitcell, library, framesperdegree):
         self.ff = first_frame
         self.lf = last_frame
         self.master_dir = master_directory
-        self.masterpath = masterpath
-        self.args = args
+        self.masterfilepath = masterfilepath
         self.frames = '{a}_{b}'.format(a=self.ff,b=self.lf)
-        self.oscillation_per_frame = "{:.2f}".format(1/args.framesperdegree)
+        self.oscillation_per_frame = "{:.2f}".format(1/framesperdegree)
+        self.wavelength = wavelength
+        self.beamcenter = beamcenter
+        self.unitcell = unitcell
+        self.distance = distance
+        self.library = library
+        self.datarange = "{a} {b}".format(a=self.ff, b=self.lf)
+        self.backgroundrange = "{a} {b}".format(a=self.ff, b=self.lf)
+        self.spotrange = "{a} {b}".format(a=self.ff, b=self.lf)
         self.dwdict = {}
 
         # Variables defined within class:
@@ -36,10 +43,11 @@ class Datawell(object):
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
         try:
-            d_b_s_range = "{a} {b}".format(a=self.ff, b=self.lf)
-            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.args.unitcell, self.masterpath,
-                self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.oscillation_per_frame,
-                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library))
+            data_range = "{a} {b}".format(a=self.ff, b=self.lf)
+
+            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.unitcell, self.masterfilepath,
+                self.beamcenter[0], self.beamcenter[1], self.distance, self.oscillation_per_frame,
+                self.wavelength, self.datarange, self.backgroundrange, self.spotrange, self.library))
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
