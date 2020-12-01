@@ -58,13 +58,15 @@ def main(argv=None):
                         help='Change output directory')
     parser.add_argument('--outputname', type=str, default="ssxoutput",
                         help='Change output directory')
-    parser.add_argument('-g', '--spacegroup', default=0,
-                        help='Space group')
+    parser.add_argument('-s','--spacegroup', type=int, default=0,
+                        help='Space group number to be used in indexing, default is to determina automatically')
     parser.add_argument('-l', '--library', type=str,
                         default=neggia_path,
                         help='Location of Dectris Neggia library')
+    parser.add_argument('-m', '--maxframes', type=int,
+                        help='Number of max frames to process (default all frames)')
     parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90",
-                        help='Unit cell')
+                        help='Unit cell to be used in indexing')
     parser.add_argument('--scale', action='store_true', help="Do XSCALE after processing")
 
     parser.parse_args()
@@ -106,7 +108,7 @@ def main(argv=None):
         # Return number of data files linked to a master file:
         print('master file is: {}'.format(masterfile))
         master_class = master.Master(args, masterfile, output_directory)
-        output_dictionary[master_class.get_master_directory_name(masterfile)] = master_class.get_master_dictionary()
+        output_dictionary[master_class.get_master_directory_name()] = master_class.get_master_dictionary()
         Path( output_directory / 'results.json').write_text(json.dumps(output_dictionary, indent=2, cls=JSONEnc, sort_keys=True))
 
         #run scale.py if asked for

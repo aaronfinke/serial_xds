@@ -18,6 +18,7 @@ class Master(object):
         self.output = output_directory
         self.beamcenter, self.distance, self.wavelength, self.total_frames = self.get_attributes_from_H5(self.args, self.masterfilepath)
         self.unitcell = args.unitcell
+        self.spacegroup = args.spacegroup
         self.library = args.library
         # Variables defined within class:
         self.master_dictionary = Manager().dict()
@@ -41,7 +42,10 @@ class Master(object):
         return beamcenter, distance, wavelength, total_frames
 
     def get_total_frames(self, args, h5file):
-        return int(len(list(h5file['/entry/data/'])) * args.oscillation * args.framesperdegree)
+        if args.maxframes is None:
+            return int(len(list(h5file['/entry/data/'])) * args.oscillation * args.framesperdegree)
+        else:
+            return args.maxframes
 
     def get_beamcenter(self, args, h5file):
         if args.beamcenter is None:
@@ -90,7 +94,7 @@ class Master(object):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
         dw = datawell.Datawell(framenum, framenum+self.frames_to_process, self.master_directory_path,
                                     self.masterfilepath, self.beamcenter, self.distance, self.wavelength, 
-                                    self.unitcell, self.library, self.framesperdegree)
+                                    self.unitcell, self.spacegroup, self.library, self.framesperdegree)
         print("Processing frames {}-{}...".format(framenum,framenum+self.frames_to_process))
 
         dw.setup_datawell_directory()

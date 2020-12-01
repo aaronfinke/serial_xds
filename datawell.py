@@ -10,7 +10,7 @@ from jsonenc import JSONEnc
 class Datawell(object):
 
     def __init__(self, first_frame, last_frame, master_directory, masterfilepath, 
-        beamcenter, distance, wavelength, unitcell, library, framesperdegree):
+        beamcenter, distance, wavelength, unitcell, spacegroup, library, framesperdegree):
         self.ff = first_frame
         self.lf = last_frame
         self.master_dir = master_directory
@@ -20,6 +20,7 @@ class Datawell(object):
         self.wavelength = wavelength
         self.beamcenter = beamcenter
         self.unitcell = unitcell
+        self.spacegroup = spacegroup
         self.distance = distance
         self.library = library
         self.datarange = "{a} {b}".format(a=self.ff, b=self.lf)
@@ -45,7 +46,7 @@ class Datawell(object):
         try:
             data_range = "{a} {b}".format(a=self.ff, b=self.lf)
 
-            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.unitcell, self.masterfilepath,
+            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.unitcell, self.spacegroup, self.masterfilepath,
                 self.beamcenter[0], self.beamcenter[1], self.distance, self.oscillation_per_frame,
                 self.wavelength, self.datarange, self.backgroundrange, self.spotrange, self.library))
         except Exception as ex:
