@@ -49,7 +49,7 @@ class Master(object):
         #breakpoint()
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
         f1 = framenum + self.config.frontoffset
-        f2 = (framenum + self.config.framesperwell) - self.config.backoffset
+        f2 = (framenum + self.config.framesperwell) - self.config.backoffset - 1
         dw = datawell.Datawell(self.config, f1, f2, self.master_directory_path, self.masterfilepath)
         print("Processing frames {}-{}...".format(f1, f2))
 
