@@ -58,6 +58,7 @@ class Config(object):
         self.outputdir = self.args.outputdir
         self.outputname = self.args.outputname
         self.spacegroup = self.args.spacegroup
+        self.beamcenter = self.args.beamcenter
         self.library = self.args.library
         self.totalframes = self.args.totalframes
         self.unitcell = self.args.unitcell
