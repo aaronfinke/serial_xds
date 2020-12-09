@@ -5,28 +5,21 @@ import json
 from generate_xds import gen_xds_text
 from pathlib import Path
 from jsonenc import JSONEnc
+import config
 
 
 class Datawell(object):
 
-    def __init__(self, first_frame, last_frame, master_directory, masterfilepath, 
-        beamcenter, distance, wavelength, unitcell, spacegroup, library, framesperdegree):
+    def __init__(self, config, first_frame, last_frame, master_directory, masterfilepath):
+        self.config = config
         self.ff = first_frame
         self.lf = last_frame
         self.master_dir = master_directory
         self.masterfilepath = masterfilepath
-        self.frames = '{a}_{b}'.format(a=self.ff,b=self.lf)
-        self.oscillation_per_frame = "{:.2f}".format(1/framesperdegree)
-        self.wavelength = wavelength
-        self.beamcenter = beamcenter
-        self.unitcell = unitcell
-        self.spacegroup = spacegroup
-        self.distance = distance
-        self.library = library
-        self.datarange = "{a} {b}".format(a=self.ff, b=self.lf)
-        self.backgroundrange = "{a} {b}".format(a=self.ff, b=self.lf)
-        self.spotrange = "{a} {b}".format(a=self.ff, b=self.lf)
+        self.xdspath = "??????".join((str(self.masterfilepath).rsplit("master", 1)))
+        self.filerange = '{start:04d} {end:04d}'.format(start=self.ff, end=self.lf)
         self.dwdict = {}
+        
 
         # Variables defined within class:
         self.framepath = Path(self.master_dir / '{start:04d}_{end:04d}'.format(start=self.ff, end=self.lf))
@@ -44,11 +37,7 @@ class Datawell(object):
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
         try:
-            data_range = "{a} {b}".format(a=self.ff, b=self.lf)
-
-            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.unitcell, self.spacegroup, self.masterfilepath,
-                self.beamcenter[0], self.beamcenter[1], self.distance, self.oscillation_per_frame,
-                self.wavelength, self.datarange, self.backgroundrange, self.spotrange, self.library))
+            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.config, self.xdspath, self.filerange))
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)

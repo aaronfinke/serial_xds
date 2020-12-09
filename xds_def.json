@@ -27,10 +27,6 @@
     "defaultvalue": 0,
     "required": false
   },
-"NUMBER_OF_IMAGES_IN_CACHE": {
-    "defaultvalue": 500,
-    "required": false
-  },
 "NAME_TEMPLATE_OF_DATA_FRAMES": {
     "defaultvalue": "",
     "required": true
@@ -125,18 +121,6 @@
   },
 "STRONG_PIXEL": {
     "defaultvalue": 3.0,
-    "required": false
-  },
-"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
-    "defaultvalue": 1500000,
-    "required": false
-  },
-"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
-    "defaultvalue": 1500000,
-    "required": false
-  },
-"MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
-    "defaultvalue": 1500000,
     "required": false
   },
 "MAXIMUM_NUMBER_OF_STRONG_PIXELS": {
@@ -255,20 +239,12 @@
     "defaultvalue": "0.1",
     "required": false
   },
-"BEAM_DIVERGENCE_E.S.D.": {
-    "defaultvalue": "0.025",
-    "required": false
-  },
 "NUMBER_OF_PROFILE_GRID_POINTS_ALONG_ALPHA/BETA": {
     "defaultvalue": "9",
     "required": false
   },
 "NUMBER_OF_PROFILE_GRID_POINTS_ALONG_GAMMA": {
     "defaultvalue": "9",
-    "required": false
-  },
-"BEAM_DIVERGENCE_E.S.D.": {
-    "defaultvalue": "0.025",
     "required": false
   },
 "BEAM_DIVERGENCE_E.S.D.": {
