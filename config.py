@@ -54,6 +54,7 @@ class Config(object):
     def set_args(self):
         self.input = self.args.input
         self.oscillationperwell = self.args.oscillationperwell
+        self.oscillation = self.args.oscillation
         self.outputdir = self.args.outputdir
         self.outputname = self.args.outputname
         self.spacegroup = self.args.spacegroup
