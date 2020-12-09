@@ -16,8 +16,8 @@ DATA_RANGE= {framerange}
 SPOT_RANGE= {framerange}
 LIB={config.library}
 DETECTOR= {config.dettype} MINIMUM_VALID_PIXEL_VALUE=0 OVERLOAD= {config.overload}
-SENSOR_THICKNESS= {config.sensorthickness}
-NX= {config.nx} NY= {config.ny}  QX= {config.qx}  QY= {config.qy}
+SENSOR_THICKNESS= {config.sensorthickness:.3f}
+NX= {config.nx} NY= {config.ny}  QX= {config.qx:.3f}  QY= {config.qy:.3f}
 
 TRUSTED_REGION=0.0 1.2
 DIRECTION_OF_DETECTOR_X-AXIS= 1.0 0.0 0.0
