@@ -67,7 +67,6 @@ class Config(object):
         self.xscale = self.args.xscale
         self.frontoffset = self.args.frontoffset
         self.backoffset = self.args.backoffset
-        self.framesperwell = int(self.oscillationperwell * (1 / self.oscillation))
 
     
     def set_detector_params(self,masterpath):
@@ -106,6 +105,8 @@ class Config(object):
         #     sys.exit("File 'arguments.json' could not be written.")
 
     def update_configuration(self):
+        self.framesperwell = int(self.oscillationperwell * (1 / self.oscillation))
+
         self.configuration = {
             'input' : self.input ,
             'configfile' : self.configfile ,
