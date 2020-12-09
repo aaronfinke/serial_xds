@@ -71,8 +71,8 @@ def main(argv=None):
                         help='Change output directory')
     parser.add_argument('--outputname', type=str, default="ssxoutput",
                         help='Change output directory')                        
-    parser.add_argument('--reversephi', action='store_true',
-                        help='Reverse phi oscillation')
+    parser.add_argument('--rotationaxis', type=str, default='-1 0 0',
+                        help='Rotation axis (XDS Coordinates)')
     parser.add_argument('--xscale', action='store_true', help="Do XSCALE after processing")
     parser.parse_args()
     args = parser.parse_args()

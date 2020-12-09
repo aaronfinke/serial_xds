@@ -26,7 +26,7 @@ class Config(object):
         self.njobs = None
         self.nproc = None
         self.nprocpool = None
-        self.reversephi = None
+        self.rotationaxis = None
         self.xscale = None
 
         self.nx = None
@@ -66,7 +66,7 @@ class Config(object):
         self.njobs = self.args.njobs
         self.nproc = self.args.nproc
         self.nprocpool = int(os.cpu_count() / self.njobs)
-        self.reversephi = self.args.reversephi
+        self.rotationaxis = self.args.rotationaxis
         self.xscale = self.args.xscale
         self.frontoffset = self.args.frontoffset
         self.backoffset = self.args.backoffset
@@ -124,7 +124,7 @@ class Config(object):
             'unitcell' : self.unitcell ,
             'njobs' : self.njobs ,
             'nproc' : self.nproc ,
-            'reversephi' : self.reversephi ,
+            'rotationaxis' : self.rotationaxis ,
             'xscale' : self.xscale ,
 
             'nx' : self.nx ,
