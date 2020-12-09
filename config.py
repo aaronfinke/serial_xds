@@ -59,6 +59,7 @@ class Config(object):
         self.outputname = self.args.outputname
         self.spacegroup = self.args.spacegroup
         self.beamcenter = self.args.beamcenter
+        self.distance = self.args.distance
         self.library = self.args.library
         self.totalframes = self.args.totalframes
         self.unitcell = self.args.unitcell
