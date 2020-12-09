@@ -24,7 +24,7 @@ DIRECTION_OF_DETECTOR_X-AXIS= 1.0 0.0 0.0
 DIRECTION_OF_DETECTOR_Y-AXIS= 0.0 1.0 0.0
 MAXIMUM_NUMBER_OF_JOBS={config.njobs}
 MAXIMUM_NUMBER_OF_PROCESSORS={config.nproc}
-ROTATION_AXIS= {get_rotation_axis(config.reversephi)}
+ROTATION_AXIS= {config.rotationaxis)}
 INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0
 FRACTION_OF_POLARIZATION=0.99
 POLARIZATION_PLANE_NORMAL= 0.0 1.0 0.0
@@ -45,9 +45,3 @@ NUMBER_OF_PROFILE_GRID_POINTS_ALONG_GAMMA=13
 
     """
     return text
-
-def get_rotation_axis(reversephi):
-    if reversephi:
-        return '-1 0 0'
-    else:
-        return '1 0 0'
