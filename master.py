@@ -3,6 +3,7 @@
 import os, sys, h5py, json, re, errno
 from multiprocessing import Pool, Manager
 import datawell
+import xds
 from pathlib import Path
 from jsonenc import JSONEnc
 
@@ -17,6 +18,8 @@ class Master(object):
         self.frames_to_process = int(args.oscillationperwell * args.framesperdegree)
         self.total_frames = num_of_total_frames
         self.output = output_directory
+        self.xdsparams = xds.get_xds_params(self.args)
+        self.detparams = xds.get_detector_params(self.args.detector)
 
 
         # Variables defined within class:
@@ -46,13 +49,13 @@ class Master(object):
         try:
             new_dir_path.mkdir()
         except:
-            sys.exit("Creation of the directory {} failed.".format(dir_name))
+            sys.exit("Creation of the directory {} failed.".format(new_dir_path))
 
     def create_and_run_data_wells(self, framenum, md):
         # Generate datawell directories by creating instances of class called 'Datawell' (from datawell.py):
         print("Processing frames {}-{}...".format(framenum,framenum+self.frames_to_process-1))
         dw = datawell.Datawell(framenum, framenum+self.frames_to_process-1, self.master_directory_path,
-                                    self.masterfilepath, self.args)
+                                    self.masterfilepath, self.xdsparams, self.detparams)
         dw.setup_datawell_directory()
         dw.gen_XDS()
         dw.run()
@@ -80,7 +83,7 @@ def create_output_directory(path):
     try:
         Path(path).mkdir()
     except OSError:
-        sys.exit("Creation of the directory {} failed. Such file may already exist.".format(dir_name))
+        sys.exit("Creation of the directory {} failed. Such file may already exist.".format(path))
 
 
 def get_h5_file(path):

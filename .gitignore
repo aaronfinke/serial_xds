@@ -5,3 +5,5 @@ TODO
 collect_and_process.sh
 xscale
 results.json
+testnotebook.ipynb
+.ipynb_checkpoints
