@@ -2,7 +2,7 @@
 
 import subprocess, os, re, sys
 import json
-from generate_xds import gen_xds_text
+import xds
 from pathlib import Path
 from jsonenc import JSONEnc
 
@@ -10,14 +10,15 @@ from jsonenc import JSONEnc
 class Datawell(object):
 
     # Generating a constructor for the class:
-    def __init__(self, first_frame, last_frame, master_directory, masterpath, args):
+    def __init__(self, first_frame, last_frame, master_directory, masterpath, xdsparams, detparams):
         self.ff = first_frame
         self.lf = last_frame
         self.master_dir = master_directory
         self.masterpath = masterpath
-        self.args = args
+        self.xdsparams = self.update_xds_params(xdsparams)
+        self.detparams = detparams
         self.frames = '{a}_{b}'.format(a=self.ff,b=self.lf)
-        self.oscillation_per_frame = "{:.2f}".format(1/args.framesperdegree)
+        
         self.dwdict = {}
 
         # Variables defined within class:
@@ -30,6 +31,9 @@ class Datawell(object):
         except:
             sys.exit('Datawell directory creation failed.')
 
+    def update_xds_params(xdsparams):
+        
+
     def get_dw_path(self):
         return self.framepath
 
@@ -39,12 +43,12 @@ class Datawell(object):
             d_b_s_range = "{a} {b}".format(a=int(self.ff)+1, b=self.lf)
             Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.args.unitcell, self.masterpath,
                 self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.oscillation_per_frame,
-                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.args.library, self.args.spacegroup))
+                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.library, self.args.spacegroup))
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
-            sys.exit("File could not be written.")
+            sys.exit("File {} could not be written.".format(str(Path(self.framepath / 'XDS.INP'))))
 
     def run(self):
         # Run XDS in the datawell derectory:

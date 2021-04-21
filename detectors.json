@@ -1,0 +1,26 @@
+{
+"EIGER2_16M": {
+        "DETECTOR": "EIGER",
+        "SENSOR_THICKNESS": 0.45,
+        "MINIMUM_VALID_PIXEL_VALUE":0, 
+        "VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS": "6000 30000",
+        "OVERLOAD": 1052191,
+        "NX": 4148,
+        "NY": 4362,
+        "QX": 0.075,
+        "QY": 0.075
+},
+
+"EIGER_1M": {
+    "DETECTOR": "EIGER",
+    "SENSOR_THICKNESS": 0.32,
+    "MINIMUM_VALID_PIXEL_VALUE":0, 
+    "OVERLOAD": 65535,
+    "VALUE_RANGE_FOR_TRUSTED_DETECTOR_PIXELS": "6000 30000",
+    "NX": 1030,
+    "NY": 1065,
+    "QX": 0.075,
+    "QY": 0.075
+}
+    
+}
