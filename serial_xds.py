@@ -56,7 +56,7 @@ def main(argv=None):
     parser.add_argument('-u', '--unitcell', type=str, default="100 100 100 90 90 90",
                         help='Unit cell')
     parser.add_argument('-l', '--library', type=str,
-                        help='Location of Dectris Neggia library')
+                        help='Location of library for XDS')
     parser.add_argument('--scale', action='store_true', help="Do XSCALE after processing")
 
     parser.parse_args()

@@ -106,7 +106,7 @@ def gen_XDS_INP(framepath, masterpath, d_b_s_range, xds_params, det_params):
                 f.write(f"{item}= {xds_params[item]['value']}\n")
         for item in det_params:
             if item == "UNTRUSTED_RECTANGLE":
-                continue
-            f.write(f"{item}= {det_params[item]}\n")
-            for rect in det_params["UNTRUSTED_RECTANGLE"]:
-                f.write(f"UNTRUSTED_RECTANGLE= {rect}\n")
+                for rect in det_params["UNTRUSTED_RECTANGLE"]:
+                    f.write(f"UNTRUSTED_RECTANGLE= {rect}\n")
+            else:
+                f.write(f"{item}= {det_params[item]}\n")
