@@ -15,7 +15,7 @@ class Datawell(object):
         self.lf = last_frame
         self.master_dir = master_directory
         self.masterpath = masterpath
-        self.xdsparams = self.update_xds_params(xdsparams)
+        self.xdsparams = xdsparams
         self.detparams = detparams
         self.frames = '{a}_{b}'.format(a=self.ff,b=self.lf)
         
@@ -30,9 +30,7 @@ class Datawell(object):
             self.framepath.mkdir()
         except:
             sys.exit('Datawell directory creation failed.')
-
-    def update_xds_params(xdsparams):
-        
+    
 
     def get_dw_path(self):
         return self.framepath
@@ -41,9 +39,7 @@ class Datawell(object):
         # Generating XDS file in datawell directory:
         try:
             d_b_s_range = "{a} {b}".format(a=int(self.ff)+1, b=self.lf)
-            Path(self.framepath / 'XDS.INP').write_text(gen_xds_text(self.args.unitcell, self.masterpath,
-                self.args.beamcenter[0], self.args.beamcenter[1], self.args.distance, self.oscillation_per_frame,
-                self.args.wavelength, d_b_s_range, d_b_s_range, d_b_s_range, self.library, self.args.spacegroup))
+            xds.gen_XDS_INP(self.framepath, self.masterpath, d_b_s_range, self.xdsparams, self.detparams)
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)

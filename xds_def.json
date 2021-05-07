@@ -29,7 +29,7 @@
   },
 "NAME_TEMPLATE_OF_DATA_FRAMES": {
     "value": "",
-    "required": true
+    "required": false
   },
 "LIB": {
     "value": "",
@@ -41,12 +41,17 @@
   },
 "DATA_RANGE": {
     "value": "",
-    "required": true
+    "required": false
   },
-"BACKGROUND_RANGE": {
+  "BACKGROUND_RANGE": {
     "value": "",
-    "required": true
+    "required": false
   },
+  "SPOT_RANGE": {
+    "value": "",
+    "required": false
+  },
+  
 "DIRECTION_OF_DETECTOR_X-AXIS": {
     "value": "1.0 0.0 0.0",
     "required": true

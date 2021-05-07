@@ -16,21 +16,6 @@ import scale
 
 
 def main(argv=None):
-
-    # root = logging.getLogger()
-    # root.setLevel(logging.DEBUG)
-    #
-    # streamhandler = logging.StreamHandler(sys.stdout)
-    # filehandler = logging.FileHandler(filename='tmp.log')
-    # handlers=[streamhandler, filehandler]
-    # logging.basicConfig(
-    #     level=logging.DEBUG,
-    #     format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
-    #     handlers=handlers
-    #     )
-    # root.addHandler(streamhandler)
-    # root.addHandler(filehandler)
-
     if argv is None:
         argv = sys.argv
 
@@ -86,6 +71,9 @@ def main(argv=None):
                     setattr(args, key, configs[key])
     master.check_args(args)
 
+    for key in vars(args):
+        print("{} value is {}".format(key, vars(args)[key]))
+
     outpath_path = args.output
     formatted_date = '{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
                     a=date.year,b=date.month,c=date.day,d=date.hour,e=date.minute,f=date.second)
@@ -116,6 +104,7 @@ def main(argv=None):
             masterpath = Path(masterdir_input / masterfile)
             if args.maxframes is None:
                 totalframes = master.get_number_of_files(masterpath, args)
+                print(f"Total Number of Frames is: {totalframes}")
             else:
                 totalframes = args.maxframes
             # Each master file in the list now used to create an instance of a class called 'Master' (from master.py):

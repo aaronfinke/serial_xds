@@ -59,17 +59,17 @@ NUMBER_OF_PROFILE_GRID_POINTS_ALONG_GAMMA=13
     return text
 
 def xds_from_json():
-    with open("xds_def.json") as f:
+    with open(Path(Path(__file__).parent/ "xds_def.json")) as f:
         xds_json = json.load(f)
     return xds_json
 
 def get_detector_params(det):
-    with open("detectors.json") as y:
-        det_json = json.load(y)
+    with open(Path(Path(__file__).parent/"detectors.json")) as f:
+        det_json = json.load(f)
     for item in det_json:
         if item == det:
-            det1 = det_json[item]
-    return det1
+            det_dict = det_json[item]
+    return det_dict
 
 
 def get_xds_params(args):
@@ -93,3 +93,20 @@ def get_library_path(self):
         return "!LIB="
     else:
         return f"LIB= {self.args.library}"
+
+def gen_XDS_INP(framepath, masterpath, d_b_s_range, xds_params, det_params):
+    template_path = "??????".join((str(masterpath).rsplit("master", 1)))
+    with open(Path(framepath / 'XDS.INP'), 'w') as f:
+        f.write(f"NAME_TEMPLATE_OF_DATA_FRAMES= {template_path}\n")
+        f.write(f"BACKGROUND_RANGE= {d_b_s_range}\n")
+        f.write(f"SPOT_RANGE= {d_b_s_range}\n")
+        f.write(f"DATA_RANGE= {d_b_s_range}\n")
+        for item in xds_params:
+            if xds_params[item]['required']:
+                f.write(f"{item}= {xds_params[item]['value']}\n")
+        for item in det_params:
+            if item == "UNTRUSTED_RECTANGLE":
+                continue
+            f.write(f"{item}= {det_params[item]}\n")
+            for rect in det_params["UNTRUSTED_RECTANGLE"]:
+                f.write(f"UNTRUSTED_RECTANGLE= {rect}\n")

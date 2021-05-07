@@ -96,9 +96,15 @@ def get_h5_file(path):
 def get_number_of_files(path, args):
     print(path)
     f = get_h5_file(path)
-    lastdata = list(f['/entry/data/'].keys())[-1]
+    x = -1
+    lastdata = list(f['/entry/data/'].keys())[x]
+    g = f['/entry/data/'].get(lastdata)
+    while g is None:
+        x = x - 1
+        lastdata = list(f['/entry/data/'].keys())[x]
+        g = f['/entry/data/'].get(lastdata)
     try:
-        numimages = f['/entry/data/'].get(lastdata).attrs.get('image_nr_high')
+        numimages =  g.attrs.get('image_nr_high')
     except:
         numimages = len(list(f['/entry/data/'].keys())) * int(args.oscillation) * int(args.framesperdegree)
     return numimages
