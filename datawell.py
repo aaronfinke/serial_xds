@@ -38,7 +38,7 @@ class Datawell(object):
     def gen_XDS(self):
         # Generating XDS file in datawell directory:
         try:
-            d_b_s_range = "{a} {b}".format(a=int(self.ff)+1, b=self.lf)
+            d_b_s_range = "{a} {b}".format(a=int(self.ff), b=self.lf)
             xds.gen_XDS_INP(self.framepath, self.masterpath, d_b_s_range, self.xdsparams, self.detparams)
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments:\n{1!r}"
