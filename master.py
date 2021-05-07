@@ -102,6 +102,8 @@ def get_number_of_files(path, args):
     while g is None:
         x = x - 1
         lastdata = list(f['/entry/data/'].keys())[x]
+        if lastdata == list(f['/entry/data/'].keys())[0]:
+            break
         g = f['/entry/data/'].get(lastdata)
     try:
         numimages =  g.attrs.get('image_nr_high')
