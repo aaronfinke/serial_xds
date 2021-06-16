@@ -7,3 +7,4 @@ xscale
 results.json
 testnotebook.ipynb
 .ipynb_checkpoints
+.vscode
