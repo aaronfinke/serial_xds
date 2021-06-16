@@ -24,9 +24,9 @@ def main(argv=None):
 
     for key in vars(args):
         print("{} value is {}".format(key, vars(args)[key]))
-    query = master.query_args("OK to Continue?")
-    if query == "no":
-        sys.exit()
+    # query = master.query_args("OK to Continue?")
+    # if query == "no":
+    #     sys.exit()
 
     outpath_path = args.output
     formatted_date = '{a:04d}{b:02d}{c:02d}_{d:02d}{e:02d}{f:02d}'.format(
