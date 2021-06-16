@@ -62,6 +62,4 @@ def parse_args(args):
                     continue
                 if getattr(args, key) is None:
                     setattr(args, key, configs[key])
-
-
-    master.check_args(args)
+    return args
